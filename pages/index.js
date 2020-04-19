@@ -57,6 +57,46 @@ function HomePage() {
     }
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('TOKEN')
+    Router.replace('/login')
+  }
+
+  const handleImport = async (file) => {
+    try {
+      const form = new FormData()
+      form.append('File', file, 'passwords.csv')
+      form.append('URL', 'URL')
+      form.append('Username', 'Username')
+      form.append('Password', 'Password')
+
+      await fetch(`/logins/import`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('TOKEN')
+        },
+        body: form
+      })
+
+      message.success('Import successfully')
+      revalidate()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const handleExport = async () => {
+    try {
+      const data = await fetch(`/logins/export`, { method: 'POST' }, false)
+      const content = await data.text()
+      download(content, 'passwall.csv', 'text/csv')
+      message.success('Passwords exported')
+      revalidate()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   return (
     <div className="app">
       <Header
