@@ -51,6 +51,30 @@ function HomePage() {
     }
   }
 
+  const handleImport = async (file) => {
+    try {
+      const form = new FormData()
+      form.append('File', file, 'passwords.csv')
+      form.append('URL', 'URL')
+      form.append('Username', 'Username')
+      form.append('Password', 'Password')
+
+      await fetch(`/logins/import`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('TOKEN')
+        },
+        body: form
+      })
+
+      message.success('Import successfully')
+      revalidate()
+    } catch (e) {
+      console.log(e)
+      message.error(e.message)
+    }
+  }
+
   const onModalClose = () => {
     setNewModal(false)
   }
@@ -92,6 +116,7 @@ function HomePage() {
         onModalOpen={onModalOpen}
         onLogout={handleLogout}
         onExport={handleExport}
+        onImport={handleImport}
       />
 
       <div className="app-table">
