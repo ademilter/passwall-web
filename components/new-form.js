@@ -1,13 +1,13 @@
-import * as React from "react"
-import { Modal, Button } from "antd"
-import { Form, FormItem, Input } from "formik-antd"
-import { Formik } from "formik"
-import { GlobalOutlined, UserOutlined, LockOutlined } from "@ant-design/icons"
-import * as Yup from "yup"
+import * as React from 'react'
+import { Modal, Button } from 'antd'
+import { Form, FormItem, Input } from 'formik-antd'
+import { Formik } from 'formik'
+import { GlobalOutlined, UserOutlined } from '@ant-design/icons'
+import * as Yup from 'yup'
 
 const NewPassSchema = Yup.object().shape({
-  URL: Yup.string().required("Required"),
-  Username: Yup.string().required("Required"),
+  URL: Yup.string().required('Required'),
+  Username: Yup.string().required('Required'),
   Password: Yup.string()
   // .min(6, "Too Short!")
   // .max(128, "Too Long!")
@@ -46,7 +46,7 @@ function NewForm({ visible, loading, onClose, onSubmit }) {
     >
       <Formik
         innerRef={formRef}
-        initialValues={{ URL: "", Username: "", Password: "" }}
+        initialValues={{ URL: '', Username: '', Password: '' }}
         validationSchema={NewPassSchema}
         onSubmit={onSubmit}
       >
