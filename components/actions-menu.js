@@ -6,14 +6,18 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 
-const Actions = ({ onLogout = () => {} }) => {
+const Actions = ({
+  onImport = () => {},
+  onExport = () => {},
+  onLogout = () => {},
+}) => {
   return (
     <Menu className="dropdown-menu">
-      <Menu.Item>
+      <Menu.Item onClick={onImport}>
         <ImportOutlined />
         Import
       </Menu.Item>
-      <Menu.Item>
+      <Menu.Item onClick={onExport}>
         <ExportOutlined />
         Export
       </Menu.Item>

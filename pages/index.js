@@ -2,6 +2,7 @@ import * as React from "react";
 import Router from "next/router";
 import useSWR from "swr";
 import { message } from "antd";
+import download from "downloadjs";
 
 import fetch from "../libs/fetch";
 
@@ -49,6 +50,22 @@ function HomePage() {
     Router.replace("/login");
   };
 
+  const handleImport = () => {
+    console.log("import");
+  };
+
+  const handleExport = async () => {
+    try {
+      const data = await fetch(`/logins/export`, { method: "POST" }, false);
+      const content = await data.text();
+      download(content, "passwall.csv", "text/csv");
+      message.success("Passwords exported");
+      revalidate();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <div className="app">
       <Header
@@ -56,6 +73,8 @@ function HomePage() {
         onDataRefresh={revalidate}
         onModalOpen={onModalOpen}
         onLogout={handleLogout}
+        onImport={handleImport}
+        onExport={handleExport}
       />
 
       <div className="app-table">
