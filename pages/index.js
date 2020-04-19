@@ -11,14 +11,18 @@ import PassTable from '../components/table'
 function HomePage() {
   const [showNewModal, setNewModal] = React.useState(false)
 
-  const { data: passData, error, isValidating, revalidate } = useSWR("/logins/", fetch, {
-    initialData: []
-  })
+  const { data: passData, error, isValidating, revalidate } = useSWR(
+    '/logins/',
+    fetch,
+    {
+      initialData: []
+    }
+  )
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     if (!error) return
     message.error(error)
-  },[error])
+  }, [error])
 
   const onModalClose = () => {
     setNewModal(false)

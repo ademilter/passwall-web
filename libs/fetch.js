@@ -1,6 +1,5 @@
-
-import fetch from "isomorphic-unfetch"
-import Router from "next/router"
+import fetch from 'isomorphic-unfetch'
+import Router from 'next/router'
 
 export default async function (path, options) {
   const URL = localStorage.getItem('BASE_URL') || process.env.BASE_URL
