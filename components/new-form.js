@@ -6,8 +6,8 @@ import { GlobalOutlined, UserOutlined } from '@ant-design/icons'
 import * as Yup from 'yup'
 
 const NewPassSchema = Yup.object().shape({
-  URL: Yup.string().required('Required'),
-  Username: Yup.string().required('Required'),
+  URL: Yup.string().required('Required').trim(' '),
+  Username: Yup.string().required('Required').trim(' '),
   Password: Yup.string()
   // .min(6, "Too Short!")
   // .max(128, "Too Long!")
