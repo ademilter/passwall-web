@@ -1,6 +1,6 @@
-import fetch from "isomorphic-unfetch"
-import Router from "next/router"
-import { message } from "antd"
+import fetch from 'isomorphic-unfetch'
+import Router from 'next/router'
+import { message } from 'antd'
 
 export default async function (path, options = {}) {
   const URL = localStorage.getItem('BASE_URL') || process.env.BASE_URL;
@@ -9,13 +9,13 @@ export default async function (path, options = {}) {
   try {
     const res = await fetch(`${URL}${path}`, {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("TOKEN")
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('TOKEN')
       },
       ...rest,
     });
     if (res.status == 401) {
-      Router.push("/login");
+      Router.push('/login');
 
       return Promise.reject(res);
     }

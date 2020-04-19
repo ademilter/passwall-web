@@ -5,8 +5,7 @@ import { UserOutlined, LockOutlined, GlobalOutlined } from '@ant-design/icons'
 import * as Yup from 'yup'
 import Router from 'next/router'
 
-import fetch from "../libs/fetch"
-import {useState} from "react";
+import fetch from '../libs/fetch'
 import { Alert } from 'antd';
 
 const LoginSchema = Yup.object().shape({
@@ -16,7 +15,7 @@ const LoginSchema = Yup.object().shape({
 })
 
 function LoginPage() {
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
   const onSubmit = async (values, actions) => {
     try {
       localStorage.setItem('BASE_URL', values.BaseURL)
@@ -24,7 +23,7 @@ function LoginPage() {
         method: 'POST',
         body: JSON.stringify(values)
       })
-      localStorage.setItem("TOKEN", token)
+      localStorage.setItem('TOKEN', token)
       Router.push('/')
     } catch (e) {
       if (e.status === 401) {

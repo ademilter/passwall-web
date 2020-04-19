@@ -30,7 +30,7 @@ function HomePage() {
     try {
       await fetch('/logins/', { method: 'POST', body: JSON.stringify(values) })
       setNewModal(false)
-      message.success("Password added")
+      message.success('Password added')
       revalidate()
     } finally {
       actions.setSubmitting(false)
