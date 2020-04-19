@@ -1,14 +1,10 @@
-import * as React from "react";
-import { Space, Button, Typography, Menu, Dropdown } from "antd";
-import {
-  ReloadOutlined,
-  PlusOutlined,
-  EllipsisOutlined,
-} from "@ant-design/icons";
+import * as React from 'react'
+import { Space, Button, Typography } from 'antd'
+import { ReloadOutlined, PlusOutlined } from '@ant-design/icons'
 
-import Actions from "./actions-menu";
+import Actions from './actions-menu'
 
-const { Title } = Typography;
+const { Title } = Typography
 
 function Header({
   loading,
@@ -16,11 +12,11 @@ function Header({
   onDataRefresh = () => {},
   onLogout = () => {},
   onImport = () => {},
-  onExport = () => {},
+  onExport = () => {}
 }) {
   const ActionsMenu = (
     <Actions onLogout={onLogout} onImport={onImport} onExport={onExport} />
-  );
+  )
 
   return (
     <header className="header">
@@ -63,7 +59,7 @@ function Header({
         }
       `}</style>
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header

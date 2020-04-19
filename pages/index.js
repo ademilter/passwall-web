@@ -1,89 +1,101 @@
-import * as React from "react";
-import Router from "next/router";
-import useSWR from "swr";
-import { message } from "antd";
-import download from "downloadjs";
+import * as React from 'react'
+import useSWR from 'swr'
+import { message } from 'antd'
 
-import fetch from "../libs/fetch";
+import fetch from '../libs/fetch'
 
-import NewForm from "../components/new-form";
-import Header from "../components/header";
-import PassTable from "../components/table";
+import NewForm from '../components/new-form'
+import Header from '../components/header'
+import PassTable from '../components/table'
 
 function HomePage() {
-  const [showNewModal, setNewModal] = React.useState(false);
-  const { data: pass, isValidating, revalidate } = useSWR("/logins/", fetch);
+  const [showNewModal, setNewModal] = React.useState(false)
+
+  const { data: passData, error, isValidating, revalidate } = useSWR(
+    '/logins/',
+    fetch,
+    {
+      initialData: []
+    }
+  )
+
+  React.useEffect(() => {
+    if (!error) return
+    message.error(error)
+  }, [error])
 
   const onModalClose = () => {
-    setNewModal(false);
-  };
+    setNewModal(false)
+  }
 
   const onModalOpen = () => {
-    setNewModal(true);
-  };
+    setNewModal(true)
+  }
 
   const onCreatePass = async (values, actions) => {
     try {
-      await fetch("/logins/", { method: "POST", body: JSON.stringify(values) });
-      setNewModal(false);
-      message.success("Password added");
-      revalidate();
+      await fetch('/logins/', { method: 'POST', body: JSON.stringify(values) })
+      setNewModal(false)
+      message.success('Password added')
+      revalidate()
     } catch (e) {
-      console.log(e);
+      console.log(e)
+      message.error(e.message)
     } finally {
-      actions.setSubmitting(false);
+      actions.setSubmitting(false)
     }
-  };
+  }
 
   const onDeletePass = async (id) => {
     try {
-      await fetch(`/logins/${id}`, { method: "DELETE" });
-      message.success("Password deleted");
-      revalidate();
+      await fetch(`/logins/${id}`, { method: 'DELETE' })
+      message.success('Password deleted')
+      revalidate()
     } catch (e) {
-      console.log(e);
+      console.log(e)
+      message.error(e.message)
     }
-  };
+  }
 
   const handleLogout = () => {
-    localStorage.removeItem("TOKEN");
-    Router.replace("/login");
-  };
+    localStorage.removeItem('TOKEN')
+    Router.replace('/login')
+  }
 
   const handleImport = async (file) => {
     try {
-      const form = new FormData();
-      form.append("File", file, "passwords.csv");
-      form.append("URL", "URL");
-      form.append("Username", "Username");
-      form.append("Password", "Password");
+      const form = new FormData()
+      form.append('File', file, 'passwords.csv')
+      form.append('URL', 'URL')
+      form.append('Username', 'Username')
+      form.append('Password', 'Password')
 
       await fetch(`/logins/import`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+          Authorization: 'Bearer ' + localStorage.getItem('TOKEN')
         },
-        body: form,
-      });
+        body: form
+      })
 
-      message.success("Import successfully");
-      revalidate();
+      message.success('Import successfully')
+      revalidate()
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
+  }
 
   const handleExport = async () => {
     try {
-      const data = await fetch(`/logins/export`, { method: "POST" }, false);
-      const content = await data.text();
-      download(content, "passwall.csv", "text/csv");
-      message.success("Passwords exported");
-      revalidate();
+      const data = await fetch(`/logins/export`, { method: 'POST' }, false)
+      const content = await data.text()
+      download(content, 'passwall.csv', 'text/csv')
+      message.success('Passwords exported')
+      revalidate()
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
+  }
 
   return (
     <div className="app">
@@ -100,7 +112,7 @@ function HomePage() {
         <PassTable
           loading={isValidating}
           onDeletePass={onDeletePass}
-          data={pass ? pass : []}
+          data={passData}
         />
       </div>
 
@@ -121,7 +133,7 @@ function HomePage() {
         }
       `}</style>
     </div>
-  );
+  )
 }
 
-export default HomePage;
+export default HomePage

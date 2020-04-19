@@ -1,18 +1,18 @@
-import fetch from "isomorphic-unfetch";
-import Router from "next/router";
+import fetch from 'isomorphic-unfetch'
+import Router from 'next/router'
 
-const URL = "https://passwall-api.herokuapp.com";
-const DEV_URL = "http://localhost:3625";
+export default async function (path, options) {
+  const URL = localStorage.getItem('BASE_URL') || process.env.BASE_URL
 
-export default async function (path, options, json = true) {
-  const res = await fetch(`${DEV_URL}${path}`, {
+  const res = await fetch(`${URL}${path}`, {
     headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('TOKEN')
     },
-    ...options,
-  });
-  if (res.status == 401) Router.push("/login");
+    ...options
+  })
 
-  return json ? res.json() : res;
+  if (![200, 201].includes(res.status)) await Router.push('/login')
+
+  return res.json()
 }
