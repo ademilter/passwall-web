@@ -7,6 +7,7 @@ import fetch from '../libs/fetch'
 import NewForm from '../components/new-form'
 import Header from '../components/header'
 import PassTable from '../components/table'
+import Router from 'next/router'
 
 function HomePage() {
   const [showNewModal, setNewModal] = React.useState(false)
@@ -23,6 +24,11 @@ function HomePage() {
     if (!error) return
     message.error(error)
   }, [error])
+
+  const handleLogout = () => {
+    localStorage.removeItem('TOKEN')
+    Router.replace('/login')
+  }
 
   const onModalClose = () => {
     setNewModal(false)
@@ -63,6 +69,7 @@ function HomePage() {
         loading={isValidating}
         onDataRefresh={revalidate}
         onModalOpen={onModalOpen}
+        onLogout={handleLogout}
       />
 
       <div className="app-table">
