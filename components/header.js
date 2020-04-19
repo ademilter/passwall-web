@@ -14,9 +14,10 @@ function Header({
   loading,
   onModalOpen = () => {},
   onDataRefresh = () => {},
-  onLogout = () => {}
+  onLogout = () => {},
+  onExport = () => {}
 }) {
-  const ActionsMenu = <Actions onLogout={onLogout} />
+  const ActionsMenu = <Actions onLogout={onLogout} onExport={onExport} />
 
   return (
     <header className="header">

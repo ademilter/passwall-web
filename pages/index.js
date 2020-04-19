@@ -1,6 +1,7 @@
 import * as React from 'react'
 import useSWR from 'swr'
 import { message } from 'antd'
+import download from 'downloadjs'
 
 import fetch from '../libs/fetch'
 
@@ -28,6 +29,26 @@ function HomePage() {
   const handleLogout = () => {
     localStorage.removeItem('TOKEN')
     Router.replace('/login')
+  }
+
+  const handleExport = async () => {
+    try {
+      const data = await fetch(
+        `/logins/export`,
+        {
+          method: 'POST'
+        },
+        false
+      )
+
+      download(data, 'passwall.csv', 'text/csv')
+
+      message.success('Passwords exported')
+      revalidate()
+    } catch (e) {
+      console.log(e)
+      message.error(e.message)
+    }
   }
 
   const onModalClose = () => {
@@ -70,6 +91,7 @@ function HomePage() {
         onDataRefresh={revalidate}
         onModalOpen={onModalOpen}
         onLogout={handleLogout}
+        onExport={handleExport}
       />
 
       <div className="app-table">
