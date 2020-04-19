@@ -1,38 +1,48 @@
-import * as React from "react"
-import { Form, FormItem, Input, SubmitButton } from "formik-antd"
-import { Formik } from "formik"
-import { UserOutlined, LockOutlined } from "@ant-design/icons"
-import * as Yup from "yup"
-import Router from "next/router"
+import * as React from "react";
+import { Alert } from "antd";
+import { Form, FormItem, Input, SubmitButton } from "formik-antd";
+import { Formik } from "formik";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import * as Yup from "yup";
+import Router from "next/router";
 
-import fetch from "../libs/fetch"
+import fetch from "../libs/fetch";
 
 const LoginSchema = Yup.object().shape({
   Username: Yup.string().required("Required"),
-  Password: Yup.string().required("Required")
-})
+  Password: Yup.string().required("Required"),
+});
 
 function LoginPage() {
+  const [state, setState] = React.useState({
+    error: null,
+  });
+
   const onSubmit = async (values, actions) => {
     try {
       const data = await fetch("/auth/signin", {
         method: "POST",
-        body: JSON.stringify(values)
-      })
+        body: JSON.stringify(values),
+      });
 
       if (data.token) {
-        localStorage.setItem("TOKEN", data.token)
-        Router.push("/")
+        localStorage.setItem("TOKEN", data.token);
+        Router.push("/");
+        return;
       }
+
+      setState({ error: data.message });
     } catch (e) {
-      console.log(e)
+      console.log(e);
     } finally {
-      actions.setSubmitting(false)
+      actions.setSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="container">
+      {state.error && <Alert message={state.error} type="error" />}
+
       <Formik
         initialValues={{ Username: "", Password: "" }}
         validationSchema={LoginSchema}
@@ -71,7 +81,7 @@ function LoginPage() {
         }
       `}</style>
     </div>
-  )
+  );
 }
 
-export default LoginPage
+export default LoginPage;
