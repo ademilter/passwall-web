@@ -1,47 +1,53 @@
-import * as React from "react"
-import useSWR from "swr"
-import { message } from "antd"
+import * as React from "react";
+import Router from "next/router";
+import useSWR from "swr";
+import { message } from "antd";
 
-import fetch from "../libs/fetch"
+import fetch from "../libs/fetch";
 
-import NewForm from "../components/new-form"
-import Header from "../components/header"
-import PassTable from "../components/table"
+import NewForm from "../components/new-form";
+import Header from "../components/header";
+import PassTable from "../components/table";
 
 function HomePage() {
-  const [showNewModal, setNewModal] = React.useState(false)
-  const { data: pass, isValidating, revalidate } = useSWR("/logins/", fetch)
+  const [showNewModal, setNewModal] = React.useState(false);
+  const { data: pass, isValidating, revalidate } = useSWR("/logins/", fetch);
 
   const onModalClose = () => {
-    setNewModal(false)
-  }
+    setNewModal(false);
+  };
 
   const onModalOpen = () => {
-    setNewModal(true)
-  }
+    setNewModal(true);
+  };
 
   const onCreatePass = async (values, actions) => {
     try {
-      await fetch("/logins/", { method: "POST", body: JSON.stringify(values) })
-      setNewModal(false)
-      message.success("Password added")
-      revalidate()
+      await fetch("/logins/", { method: "POST", body: JSON.stringify(values) });
+      setNewModal(false);
+      message.success("Password added");
+      revalidate();
     } catch (e) {
-      console.log(e)
+      console.log(e);
     } finally {
-      actions.setSubmitting(false)
+      actions.setSubmitting(false);
     }
-  }
+  };
 
   const onDeletePass = async (id) => {
     try {
-      await fetch(`/logins/${id}`, { method: "DELETE" })
-      message.success("Password deleted")
-      revalidate()
+      await fetch(`/logins/${id}`, { method: "DELETE" });
+      message.success("Password deleted");
+      revalidate();
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    Router.replace("/login");
+  };
 
   return (
     <div className="app">
@@ -49,6 +55,7 @@ function HomePage() {
         loading={isValidating}
         onDataRefresh={revalidate}
         onModalOpen={onModalOpen}
+        onLogout={handleLogout}
       />
 
       <div className="app-table">
@@ -76,7 +83,7 @@ function HomePage() {
         }
       `}</style>
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;
