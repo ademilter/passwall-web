@@ -50,8 +50,27 @@ function HomePage() {
     Router.replace("/login");
   };
 
-  const handleImport = () => {
-    console.log("import");
+  const handleImport = async (file) => {
+    try {
+      const form = new FormData();
+      form.append("File", file, "passwords.csv");
+      form.append("URL", "URL");
+      form.append("Username", "Username");
+      form.append("Password", "Password");
+
+      await fetch(`/logins/import`, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+        },
+        body: form,
+      });
+
+      message.success("Import successfully");
+      revalidate();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleExport = async () => {
