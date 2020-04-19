@@ -1,6 +1,8 @@
 import * as React from 'react'
+import Router from 'next/router'
 import useSWR from 'swr'
 import { message } from 'antd'
+import download from 'downloadjs'
 
 import fetch from '../libs/fetch'
 
@@ -88,8 +90,7 @@ function HomePage() {
   const handleExport = async () => {
     try {
       const data = await fetch(`/logins/export`, { method: 'POST' }, false)
-      const content = await data.text()
-      download(content, 'passwall.csv', 'text/csv')
+      download(data, 'passwall.csv', 'text/csv')
       message.success('Passwords exported')
       revalidate()
     } catch (e) {

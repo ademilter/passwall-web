@@ -1,6 +1,10 @@
 import * as React from 'react'
-import { Space, Button, Typography } from 'antd'
-import { ReloadOutlined, PlusOutlined } from '@ant-design/icons'
+import { Space, Button, Typography, Dropdown } from 'antd'
+import {
+  ReloadOutlined,
+  PlusOutlined,
+  EllipsisOutlined
+} from '@ant-design/icons'
 
 import Actions from './actions-menu'
 

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Form, FormItem, Input, SubmitButton } from 'formik-antd'
+import { Alert } from 'antd'
 import { Formik } from 'formik'
 import { UserOutlined, LockOutlined, GlobalOutlined } from '@ant-design/icons'
 import * as Yup from 'yup'
@@ -20,6 +21,7 @@ function LoginPage() {
 
   const onSubmit = async (values, actions) => {
     try {
+      localStorage.setItem('BASE_URL', values.BaseURL)
       const data = await fetch('/auth/signin', {
         method: 'POST',
         body: JSON.stringify(values)
