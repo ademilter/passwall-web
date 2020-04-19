@@ -81,7 +81,7 @@ function LoginPage() {
         {() => (
           <Form layout="vertical">
             <FormItems />
-            {errorMessage && <Alert message={errorMessage} type="error" />}
+            { errorMessage && <Alert message={errorMessage} type="error" /> }
             <div className="cta">
               <SubmitButton>Login</SubmitButton>
             </div>
