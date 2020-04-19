@@ -10,7 +10,6 @@ import PassTable from '../components/table'
 
 function HomePage() {
   const [showNewModal, setNewModal] = React.useState(false)
-
   const { data: passData, error, isValidating, revalidate } = useSWR(
     '/logins/',
     fetch,
@@ -18,11 +17,6 @@ function HomePage() {
       initialData: []
     }
   )
-
-  React.useEffect(() => {
-    if (!error) return
-    message.error(error)
-  }, [error])
 
   const onModalClose = () => {
     setNewModal(false)
@@ -36,25 +30,17 @@ function HomePage() {
     try {
       await fetch('/logins/', { method: 'POST', body: JSON.stringify(values) })
       setNewModal(false)
-      message.success('Password added')
+      message.success("Password added")
       revalidate()
-    } catch (e) {
-      console.log(e)
-      message.error(e.message)
     } finally {
       actions.setSubmitting(false)
     }
   }
 
   const onDeletePass = async (id) => {
-    try {
-      await fetch(`/logins/${id}`, { method: 'DELETE' })
-      message.success('Password deleted')
-      revalidate()
-    } catch (e) {
-      console.log(e)
-      message.error(e.message)
-    }
+    await fetch(`/logins/${id}`, { method: 'DELETE' })
+    message.success('Password deleted')
+    revalidate()
   }
 
   return (

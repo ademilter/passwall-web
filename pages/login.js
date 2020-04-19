@@ -5,7 +5,9 @@ import { UserOutlined, LockOutlined, GlobalOutlined } from '@ant-design/icons'
 import * as Yup from 'yup'
 import Router from 'next/router'
 
-import fetch from '../libs/fetch'
+import fetch from "../libs/fetch"
+import {useState} from "react";
+import { Alert } from 'antd';
 
 const LoginSchema = Yup.object().shape({
   Username: Yup.string().required('Required'),
@@ -14,6 +16,7 @@ const LoginSchema = Yup.object().shape({
 })
 
 function LoginPage() {
+  const [errorMessage, setErrorMessage] = useState('');
   const onSubmit = async (values, actions) => {
     try {
       localStorage.setItem('BASE_URL', values.BaseURL)
@@ -21,10 +24,12 @@ function LoginPage() {
         method: 'POST',
         body: JSON.stringify(values)
       })
-      localStorage.setItem('TOKEN', token)
+      localStorage.setItem("TOKEN", token)
       Router.push('/')
     } catch (e) {
-      console.log(e)
+      if (e.status === 401) {
+        setErrorMessage('The username and password you entered did not match those in our records');
+      }
     } finally {
       actions.setSubmitting(false)
     }
@@ -77,6 +82,7 @@ function LoginPage() {
         {() => (
           <Form layout="vertical">
             <FormItems />
+            {errorMessage && <Alert message={errorMessage} type="error" />}
             <div className="cta">
               <SubmitButton>Login</SubmitButton>
             </div>
