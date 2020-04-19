@@ -46,7 +46,7 @@ function HomePage() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("TOKEN");
     Router.replace("/login");
   };
 
