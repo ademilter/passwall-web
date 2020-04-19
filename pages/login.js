@@ -15,12 +15,15 @@ const LoginSchema = Yup.object().shape({
 function LoginPage() {
   const onSubmit = async (values, actions) => {
     try {
-      const { token } = await fetch("/auth/signin", {
+      const data = await fetch("/auth/signin", {
         method: "POST",
         body: JSON.stringify(values)
       })
-      localStorage.setItem("TOKEN", token)
-      Router.push("/")
+
+      if (data.token) {
+        localStorage.setItem("TOKEN", data.token)
+        Router.push("/")
+      }
     } catch (e) {
       console.log(e)
     } finally {
