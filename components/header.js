@@ -4,7 +4,19 @@ import { ReloadOutlined, PlusOutlined } from '@ant-design/icons'
 
 const { Title } = Typography
 
-function Header({ loading, onModalOpen = () => {}, onDataRefresh = () => {} }) {
+function Header({ loading, onModalOpen, onDataRefresh }) {
+  const handleDataRefresh = React.useCallback(() => {
+    if (onDataRefresh) {
+      onDataRefresh()
+    }
+  }, [onDataRefresh])
+
+  const handleModalOpen = React.useCallback(() => {
+    if (onModalOpen) {
+      onModalOpen()
+    }
+  }, [onModalOpen])
+
   return (
     <header className="header">
       <Space>
@@ -16,7 +28,7 @@ function Header({ loading, onModalOpen = () => {}, onDataRefresh = () => {} }) {
           shape="circle"
           loading={loading}
           icon={<ReloadOutlined />}
-          onClick={() => onDataRefresh()}
+          onClick={handleDataRefresh}
         />
       </Space>
 
@@ -24,7 +36,7 @@ function Header({ loading, onModalOpen = () => {}, onDataRefresh = () => {} }) {
         shape="round"
         type="primary"
         icon={<PlusOutlined />}
-        onClick={onModalOpen}
+        onClick={handleModalOpen}
       >
         New Pass
       </Button>
