@@ -1,6 +1,8 @@
 # Install npm packages
 FROM node:12-alpine as builder
 
+RUN apk add tar
+
 WORKDIR /app
 
 COPY package.json .
@@ -14,13 +16,9 @@ WORKDIR /app
 
 COPY --from=builder /app/ /app/
 
-COPY ./pages ./pages
+ADD dist.tar.gz /
 
-COPY ./components ./components
-
-COPY ./libs ./libs
-
-COPY ./styles ./styles
+RUN tar -xvzf dist.tar.gz /app
 
 RUN npm run build
 
