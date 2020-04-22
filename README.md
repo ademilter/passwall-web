@@ -18,4 +18,7 @@ npm run build && npm run start
 
 ```
 docker-compose up --build
+
+// Production
+docker-compose -f docker-compose.prod.yml up -d --build
 ```
