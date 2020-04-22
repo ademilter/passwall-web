@@ -16,10 +16,7 @@ function HomePage() {
     setIsGeneratePasswordLoading
   ] = React.useState(false)
 
-  const { data, error, revalidate, isValidating, mutate } = useSWR(
-    '/logins/',
-    fetch
-  )
+  const { data, error, revalidate, isValidating } = useSWR('/logins/', fetch)
 
   const isLoading = (!error && !data) || isValidating
 
