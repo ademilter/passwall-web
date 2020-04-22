@@ -8,6 +8,6 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     ports:
-      - 3000:3000
+      - 80:3000
