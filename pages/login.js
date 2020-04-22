@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { cache } from 'swr'
+import { message } from 'antd'
 import { Form, FormItem, Input, SubmitButton } from 'formik-antd'
 import { Formik } from 'formik'
 import { UserOutlined, LockOutlined, GlobalOutlined } from '@ant-design/icons'
@@ -46,9 +48,10 @@ function LoginPage() {
         body: JSON.stringify(values)
       })
       localStorage.setItem('TOKEN', token)
+      cache.clear()
       Router.push('/')
     } catch (e) {
-      console.log(e)
+      message.error(e.message)
     } finally {
       actions.setSubmitting(false)
     }

@@ -21,7 +21,9 @@ function PassTable({ loading, data, onDeletePass }) {
   }, [searchText])
 
   React.useEffect(() => {
-    setDataTable(data)
+    if (Array.isArray(data)) {
+      setDataTable(data)
+    }
   }, [data])
 
   const columns = React.useMemo(

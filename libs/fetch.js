@@ -1,18 +1,42 @@
 import fetch from 'isomorphic-unfetch'
+import { isServer } from '../utils'
 import Router from 'next/router'
 
-export default async function (path, options) {
-  const URL = localStorage.getItem('BASE_URL') || process.env.BASE_URL
+function parseStatus(code, res) {
+  return new Promise((resolve, reject) => {
+    if (code >= 200 && code < 300) {
+      res.then((response) => resolve(response))
+    } else if (code === 401) {
+      Router.push('/login')
+      res.then((response) => reject(response))
+    } else {
+      res.then((response) => reject(response))
+    }
+  })
+}
 
-  const res = await fetch(`${URL}${path}`, {
+function parseError(err) {
+  return new Promise((resolve, reject) =>
+    reject({ code: err.code, message: err.message })
+  )
+}
+
+export default (path, options = { method: 'GET' }) => {
+  const URL = isServer()
+    ? process.env.BASE_URL
+    : localStorage.getItem('BASE_URL') || process.env.BASE_URL
+  const requestURL = `${URL}${path}`
+
+  const TOKEN = isServer() ? '' : 'Bearer ' + localStorage.getItem('TOKEN')
+
+  return fetch(requestURL, {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem('TOKEN')
+      Authorization: TOKEN,
+      ...options.headers
     },
     ...options
   })
-
-  if (![200, 201].includes(res.status)) await Router.push('/login')
-
-  return res.json()
+    .then((res) => parseStatus(res.status, res.json()))
+    .catch((err) => parseError(err))
 }

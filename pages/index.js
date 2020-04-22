@@ -7,6 +7,7 @@ import fetch from '../libs/fetch'
 import NewForm from '../components/new-form'
 import Header from '../components/header'
 import PassTable from '../components/table'
+import { hasToken } from '../utils'
 
 function HomePage() {
   const [showNewModal, setNewModal] = React.useState(false)
@@ -15,17 +16,19 @@ function HomePage() {
     setIsGeneratePasswordLoading
   ] = React.useState(false)
 
-  const { data: passData, error, isValidating, revalidate } = useSWR(
+  const { data, error, revalidate, isValidating, mutate } = useSWR(
     '/logins/',
-    fetch,
-    {
-      initialData: []
-    }
+    fetch
   )
 
+  const isLoading = (!error && !data) || isValidating
+
+  const passData = error || !Array.isArray(data) ? [] : data
+
   React.useEffect(() => {
-    if (!error) return
-    message.error(error)
+    if (error && hasToken()) {
+      message.error(error.message)
+    }
   }, [error])
 
   const onModalClose = React.useCallback(() => {
@@ -43,7 +46,11 @@ function HomePage() {
         method: 'POST'
       })
 
-      callback(password.Message)
+      if (password && password.Message) {
+        callback(password.Message)
+      } else {
+        message.error('There was an error creating the password.')
+      }
     } catch (error) {
       message.error(error.message)
     }
@@ -61,7 +68,6 @@ function HomePage() {
         message.success('Password added')
         revalidate()
       } catch (e) {
-        console.log(e)
         message.error(e.message)
       } finally {
         actions.setSubmitting(false)
@@ -77,28 +83,23 @@ function HomePage() {
         message.success('Password deleted')
         revalidate()
       } catch (e) {
-        console.log(e)
         message.error(e.message)
       }
     },
     [revalidate]
   )
 
-  React.useEffect(() => {
-    revalidate()
-  }, [revalidate])
-
   return (
     <div className="app">
       <Header
-        loading={isValidating}
+        loading={isLoading}
         onDataRefresh={revalidate}
         onModalOpen={onModalOpen}
       />
 
       <div className="app-table">
         <PassTable
-          loading={isValidating}
+          loading={isLoading}
           onDeletePass={onDeletePass}
           data={passData}
         />
