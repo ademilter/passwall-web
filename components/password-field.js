@@ -11,9 +11,11 @@ function PasswordField({ children }) {
 
   const showToggle = React.useCallback(() => setShow((prev) => !prev), [])
 
+  const copyConfig = React.useMemo(() => ({ text: children }), [children])
+
   return (
     <Space size={0}>
-      <Paragraph style={paragraphStyle} copyable>
+      <Paragraph style={paragraphStyle} copyable={copyConfig}>
         {show ? children : '• • • • • • • •'}
       </Paragraph>
       <Tooltip title={show ? 'Hide' : 'Show'}>
