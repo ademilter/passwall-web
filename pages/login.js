@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { cache } from 'swr'
+import { message } from 'antd'
 import { Form, FormItem, Input, SubmitButton } from 'formik-antd'
 import { Formik } from 'formik'
 import { UserOutlined, LockOutlined, GlobalOutlined } from '@ant-design/icons'
@@ -13,8 +15,32 @@ const LoginSchema = Yup.object().shape({
   BaseURL: Yup.string().url().required('Required')
 })
 
+const FormItemList = [
+  {
+    label: 'Base URL',
+    name: 'BaseURL',
+    required: true,
+    placeholder: process.env.BASE_URL,
+    prefix: <GlobalOutlined />
+  },
+  {
+    label: 'Username',
+    name: 'Username',
+    required: true,
+    placeholder: 'Username',
+    prefix: <UserOutlined />
+  },
+  {
+    label: 'Password',
+    name: 'Password',
+    required: true,
+    placeholder: 'Password',
+    prefix: <LockOutlined />
+  }
+]
+
 function LoginPage() {
-  const onSubmit = async (values, actions) => {
+  const onSubmit = React.useCallback(async (values, actions) => {
     try {
       localStorage.setItem('BASE_URL', values.BaseURL)
       const { token } = await fetch('/auth/signin', {
@@ -22,61 +48,49 @@ function LoginPage() {
         body: JSON.stringify(values)
       })
       localStorage.setItem('TOKEN', token)
+      cache.clear()
       Router.push('/')
     } catch (e) {
-      console.log(e)
+      message.error(e.message)
     } finally {
       actions.setSubmitting(false)
     }
-  }
-  const FormItemList = [
-    {
-      label: 'Base URL',
-      name: 'BaseURL',
-      required: true,
-      placeholder: process.env.BASE_URL,
-      prefix: <GlobalOutlined />
-    },
-    {
-      label: 'Username',
-      name: 'Username',
-      required: true,
-      placeholder: 'Username',
-      prefix: <UserOutlined />
-    },
-    {
-      label: 'Password',
-      name: 'Password',
-      required: true,
-      placeholder: 'Password',
-      prefix: <LockOutlined />
-    }
-  ]
+  }, [])
 
-  const FormItems = () => {
-    return FormItemList.map(
-      ({ label, required, name, placeholder, prefix }) => (
-        <FormItem label={label} name={name} required={required} key={name}>
-          <Input name={name} placeholder={placeholder} prefix={prefix} />
-        </FormItem>
-      )
-    )
-  }
+  const initialValues = React.useMemo(
+    () => ({
+      Username: '',
+      Password: '',
+      BaseURL: process.env.BASE_URL
+    }),
+    []
+  )
 
   return (
     <div className="container">
       <Formik
-        initialValues={{
-          Username: '',
-          Password: '',
-          BaseURL: process.env.BASE_URL
-        }}
+        initialValues={initialValues}
         validationSchema={LoginSchema}
         onSubmit={onSubmit}
       >
         {() => (
           <Form layout="vertical">
-            <FormItems />
+            {FormItemList.map(
+              ({ label, required, name, placeholder, prefix }) => (
+                <FormItem
+                  label={label}
+                  name={name}
+                  required={required}
+                  key={name}
+                >
+                  <Input
+                    name={name}
+                    placeholder={placeholder}
+                    prefix={prefix}
+                  />
+                </FormItem>
+              )
+            )}
             <div className="cta">
               <SubmitButton>Login</SubmitButton>
             </div>

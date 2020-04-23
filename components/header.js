@@ -21,6 +21,18 @@ function Header({
   const ActionsMenu = (
     <Actions onLogout={onLogout} onExport={onExport} onImport={onImport} />
   )
+function Header({ loading, onModalOpen, onDataRefresh }) {
+  const handleDataRefresh = React.useCallback(() => {
+    if (onDataRefresh) {
+      onDataRefresh()
+    }
+  }, [onDataRefresh])
+
+  const handleModalOpen = React.useCallback(() => {
+    if (onModalOpen) {
+      onModalOpen()
+    }
+  }, [onModalOpen])
 
   return (
     <header className="header">
@@ -33,7 +45,7 @@ function Header({
           shape="circle"
           loading={loading}
           icon={<ReloadOutlined />}
-          onClick={() => onDataRefresh()}
+          onClick={handleDataRefresh}
         />
       </Space>
 
@@ -55,6 +67,14 @@ function Header({
           />
         </Dropdown>
       </Space>
+      <Button
+        shape="round"
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={handleModalOpen}
+      >
+        New Pass
+      </Button>
 
       <style jsx>{`
         .header {

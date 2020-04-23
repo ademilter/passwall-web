@@ -4,16 +4,22 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
 const { Paragraph } = Typography
 
+const paragraphStyle = { marginBottom: 0 }
+
 function PasswordField({ children }) {
   const [show, setShow] = React.useState(false)
 
+  const showToggle = React.useCallback(() => setShow((prev) => !prev), [])
+
+  const copyConfig = React.useMemo(() => ({ text: children }), [children])
+
   return (
     <Space size={0}>
-      <Paragraph style={{ marginBottom: 0 }} copyable>
+      <Paragraph style={paragraphStyle} copyable={copyConfig}>
         {show ? children : '• • • • • • • •'}
       </Paragraph>
       <Tooltip title={show ? 'Hide' : 'Show'}>
-        <Button type="link" size="small" onClick={() => setShow(!show)}>
+        <Button type="link" size="small" onClick={showToggle}>
           {show ? <EyeInvisibleOutlined /> : <EyeOutlined />}
         </Button>
       </Tooltip>
