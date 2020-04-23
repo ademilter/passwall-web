@@ -12,16 +12,16 @@ const { Title } = Typography
 
 function Header({
   loading,
-  onModalOpen = () => {},
-  onDataRefresh = () => {},
-  onLogout = () => {},
-  onExport = () => {},
-  onImport = () => {}
+  onModalOpen,
+  onDataRefresh,
+  onLogout,
+  onExport,
+  onImport
 }) {
   const ActionsMenu = (
     <Actions onLogout={onLogout} onExport={onExport} onImport={onImport} />
   )
-function Header({ loading, onModalOpen, onDataRefresh }) {
+
   const handleDataRefresh = React.useCallback(() => {
     if (onDataRefresh) {
       onDataRefresh()
@@ -54,7 +54,7 @@ function Header({ loading, onModalOpen, onDataRefresh }) {
           shape="round"
           type="primary"
           icon={<PlusOutlined />}
-          onClick={onModalOpen}
+          onClick={handleModalOpen}
         >
           New Pass
         </Button>
@@ -67,14 +67,6 @@ function Header({ loading, onModalOpen, onDataRefresh }) {
           />
         </Dropdown>
       </Space>
-      <Button
-        shape="round"
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={handleModalOpen}
-      >
-        New Pass
-      </Button>
 
       <style jsx>{`
         .header {

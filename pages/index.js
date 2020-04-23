@@ -2,6 +2,7 @@ import * as React from 'react'
 import useSWR from 'swr'
 import { message } from 'antd'
 import download from 'downloadjs'
+import Router from 'next/router'
 
 import fetch from '../libs/fetch'
 
@@ -29,20 +30,17 @@ function HomePage() {
     }
   }, [error])
 
-  const handleLogout = () => {
+  const handleLogout = React.useCallback(() => {
     localStorage.removeItem('TOKEN')
     Router.replace('/login')
-  }
+  }, [])
 
-  const handleExport = async () => {
+  const handleExport = React.useCallback(async () => {
     try {
-      const data = await fetch(
-        `/logins/export`,
-        {
-          method: 'POST'
-        },
-        false
-      )
+      const data = await fetch(`/logins/export`, {
+        method: 'POST',
+        text: true
+      })
 
       download(data, 'passwall.csv', 'text/csv')
 
@@ -52,9 +50,9 @@ function HomePage() {
       console.log(e)
       message.error(e.message)
     }
-  }
+  }, [])
 
-  const handleImport = async (file) => {
+  const handleImport = React.useCallback(async (file) => {
     try {
       const form = new FormData()
       form.append('File', file, 'passwords.csv')
@@ -76,7 +74,7 @@ function HomePage() {
       console.log(e)
       message.error(e.message)
     }
-  }
+  }, [])
 
   const onModalClose = React.useCallback(() => {
     setNewModal(false)

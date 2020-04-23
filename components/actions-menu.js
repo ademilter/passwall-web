@@ -1,21 +1,28 @@
-import * as React from "react";
-import { Menu } from "antd";
+import * as React from 'react'
+import { Menu } from 'antd'
 import {
   ImportOutlined,
   ExportOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+  LogoutOutlined
+} from '@ant-design/icons'
 
 const Actions = ({
   onImport = () => {},
   onExport = () => {},
-  onLogout = () => {},
+  onLogout = () => {}
 }) => {
-  const fileInput = React.useRef();
+  const fileInput = React.useRef()
 
-  const handleImport = () => {
-    fileInput.current.click();
-  };
+  const handleImport = React.useCallback(() => {
+    if (fileInput.current) {
+      fileInput.current.click()
+    }
+  }, [])
+
+  const handleFileChange = React.useCallback(
+    (e) => onImport(e.target.files[0]),
+    [onImport]
+  )
 
   return (
     <Menu className="dropdown-menu">
@@ -25,9 +32,9 @@ const Actions = ({
           type="file"
           id="file"
           ref={fileInput}
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           accept=".csv"
-          onChange={(e) => onImport(e.target.files[0])}
+          onChange={(e) => handleFileChange(e)}
         />
         Import
       </Menu.Item>
@@ -41,7 +48,7 @@ const Actions = ({
         Logout
       </Menu.Item>
     </Menu>
-  );
-};
+  )
+}
 
-export default Actions;
+export default Actions
