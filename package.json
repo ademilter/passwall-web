@@ -5,7 +5,11 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "prod": "next export"
+    "prod": "next export",
+    "eslint": "eslint ./src ./pages --ext .jsx,.ts,.tsx,.js --cache",
+    "prettier": "prettier \"src/**/*\" \"pages/**/*\"",
+    "lint": "yarn eslint && yarn prettier --list-different",
+    "lint-fix": "yarn eslint --fix && yarn prettier --check"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.5",
@@ -27,8 +31,17 @@
     "@types/react": "^16.9.34",
     "@types/react-highlight-words": "^0.16.1",
     "@types/yup": "^0.28.0",
-    "eslint": "^6.8.0",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "eslint": "5.16.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-react": "7.19.0",
+    "husky": "^4.2.5",
     "prettier": "^2.0.4",
     "typescript": "^3.8.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn "
+    }
   }
 }

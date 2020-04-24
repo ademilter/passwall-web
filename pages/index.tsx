@@ -4,13 +4,13 @@ import useSWR from 'swr'
 import { message } from 'antd'
 import download from 'downloadjs'
 
-import fetch from '../libs/fetch'
+import fetch from '../src/libs/fetch'
 
-import PassForm from '../components/pass-form'
-import Header from '../components/header'
-import PassTable from '../components/table'
-import { hasToken } from '../utils'
-import withLogin from '../hoc/withLogin'
+import PassForm from '../src/components/pass-form'
+import Header from '../src/components/header'
+import PassTable from '../src/components/table'
+import { hasToken } from '../src/utils'
+import withLogin from '../src/hoc/withLogin'
 
 type HomePageProps = {
   showLoginForm: () => void
