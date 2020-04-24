@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { blue, red } from '@ant-design/colors'
 import { trimEllip } from '../utils'
-import { Table, Input, Popconfirm, Tooltip } from 'antd'
+import { Table, Input, Popconfirm, Tooltip, Typography } from 'antd'
 import NewForm from './new-form'
 import Highlighter from 'react-highlight-words'
 import { CloseOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons'
