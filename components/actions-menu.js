@@ -3,7 +3,9 @@ import { Menu } from 'antd'
 import {
   ImportOutlined,
   ExportOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  SaveOutlined,
+  RollbackOutlined
 } from '@ant-design/icons'
 
 const Actions = ({
@@ -41,6 +43,15 @@ const Actions = ({
       <Menu.Item onClick={onExport}>
         <ExportOutlined />
         Export
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item>
+        <SaveOutlined />
+        Backup
+      </Menu.Item>
+      <Menu.Item>
+        <RollbackOutlined />
+        Restore
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item onClick={onLogout}>
