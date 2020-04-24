@@ -16,10 +16,18 @@ function Header({
   onDataRefresh,
   onLogout,
   onExport,
-  onImport
+  onImport,
+  onBackup,
+  onRestore
 }) {
   const ActionsMenu = (
-    <Actions onLogout={onLogout} onExport={onExport} onImport={onImport} />
+    <Actions
+      onLogout={onLogout}
+      onExport={onExport}
+      onImport={onImport}
+      onBackup={onBackup}
+      onRestore={onRestore}
+    />
   )
 
   const handleDataRefresh = React.useCallback(() => {

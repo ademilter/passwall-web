@@ -11,7 +11,9 @@ import {
 const Actions = ({
   onImport = () => {},
   onExport = () => {},
-  onLogout = () => {}
+  onLogout = () => {},
+  onBackup = () => {},
+  onRestore = () => {}
 }) => {
   const fileInput = React.useRef()
 
@@ -45,11 +47,11 @@ const Actions = ({
         Export
       </Menu.Item>
       <Menu.Divider />
-      <Menu.Item>
+      <Menu.Item onClick={onBackup}>
         <SaveOutlined />
         Backup
       </Menu.Item>
-      <Menu.Item>
+      <Menu.Item onClick={onRestore}>
         <RollbackOutlined />
         Restore
       </Menu.Item>
