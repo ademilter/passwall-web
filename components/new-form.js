@@ -14,7 +14,7 @@ const NewPassSchema = Yup.object().shape({
   URL: Yup.string().trim().required('Required'),
   Username: Yup.string().trim().required('Required'),
   Password: Yup.string()
-    .min(2, 'To Short!')
+    .min(2, 'Too Short!')
     .max(128, 'Too Long!')
     .required('Required')
 })
