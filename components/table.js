@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Input, Popconfirm } from 'antd'
+import { Table, Input, Popconfirm, Typography } from 'antd'
 import Highlighter from 'react-highlight-words'
 
 import PasswordField from './password-field'
@@ -45,7 +45,12 @@ function PassTable({ loading, data, onDeletePass }) {
       },
       {
         title: 'Username',
-        dataIndex: 'Username'
+        dataIndex: 'Username',
+        render: (text) => (
+          <Typography.Paragraph style={{ marginBottom: 0 }} copyable>
+            {text}
+          </Typography.Paragraph>
+        )
       },
       {
         title: 'Password',
