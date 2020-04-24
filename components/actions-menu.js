@@ -3,13 +3,17 @@ import { Menu } from 'antd'
 import {
   ImportOutlined,
   ExportOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  SaveOutlined,
+  RollbackOutlined
 } from '@ant-design/icons'
 
 const Actions = ({
   onImport = () => {},
   onExport = () => {},
-  onLogout = () => {}
+  onLogout = () => {},
+  onBackup = () => {},
+  onRestore = () => {}
 }) => {
   const fileInput = React.useRef()
 
@@ -41,6 +45,15 @@ const Actions = ({
       <Menu.Item onClick={onExport}>
         <ExportOutlined />
         Export
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item onClick={onBackup}>
+        <SaveOutlined />
+        Backup
+      </Menu.Item>
+      <Menu.Item onClick={onRestore}>
+        <RollbackOutlined />
+        Restore
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item onClick={onLogout}>

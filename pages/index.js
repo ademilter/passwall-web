@@ -80,6 +80,34 @@ function HomePage() {
     }
   }, [])
 
+  const handleBackup = React.useCallback(async () => {
+    try {
+      await fetch(`/logins/backup`, {
+        method: 'POST'
+      })
+
+      message.success('Passwords backed up')
+      revalidate()
+    } catch (e) {
+      console.log(e)
+      message.error(e.message)
+    }
+  }, [])
+
+  const handleRestore = React.useCallback(async () => {
+    try {
+      await fetch(`/logins/restore`, {
+        method: 'POST'
+      })
+
+      message.success('Passwords restored')
+      revalidate()
+    } catch (e) {
+      console.log(e)
+      message.error(e.message)
+    }
+  }, [])
+
   const onModalClose = React.useCallback(() => {
     setNewModal(false)
   }, [])
@@ -171,6 +199,8 @@ function HomePage() {
         onLogout={handleLogout}
         onExport={handleExport}
         onImport={handleImport}
+        onBackup={handleBackup}
+        onRestore={handleRestore}
       />
 
       <div className="app-table">

@@ -45,7 +45,12 @@ function PassTable({
       },
       {
         title: 'Username',
-        dataIndex: 'Username'
+        dataIndex: 'Username',
+        render: (text) => (
+          <Typography.Paragraph style={{ marginBottom: 0 }} copyable>
+            {text}
+          </Typography.Paragraph>
+        )
       },
       {
         title: 'Password',
