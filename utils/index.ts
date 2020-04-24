@@ -1,6 +1,6 @@
 export const isServer = () => typeof window === 'undefined'
 
-const isValidToken = (token) =>
+const isValidToken = (token: string) =>
   token && /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/.test(token)
 
 export const hasToken = () => {
@@ -10,9 +10,9 @@ export const hasToken = () => {
 
   const token = localStorage.getItem('TOKEN')
 
-  return isValidToken(token)
+  return isValidToken(token || '')
 }
 
-export function trimEllip(str, length) {
+export function trimEllip(str: string, length: number) {
   return str.length > length ? `${str.substring(0, length)}...` : str
 }

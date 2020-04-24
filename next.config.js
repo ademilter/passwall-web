@@ -12,7 +12,7 @@ module.exports = function (phase, { defaultConfig }) {
 
   const env = {
     BASE_URL: (function () {
-      if (isDev) return DEV_BASE_URL
+      if (isDev) return PROD_BASE_URL
       if (isProd) return PROD_BASE_URL
     })()
   }

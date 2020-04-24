@@ -11,7 +11,7 @@ import {
 
 import * as Yup from 'yup'
 
-const NewPassSchema = Yup.object().shape({
+const PassSchema = Yup.object().shape({
   URL: Yup.string().trim().required('Required'),
   Username: Yup.string().trim().required('Required'),
   Password: Yup.string()
@@ -20,10 +20,33 @@ const NewPassSchema = Yup.object().shape({
     .required('Required')
 })
 
-function NewForm({
+type PassFormProps = {
+  visible: boolean
+  loading: boolean
+  title: string
+  submitText: string
+  onClose: () => void
+  generatePassword?: (cb: (password: string) => void) => void
+  initialValues?: {
+    Username: string
+    Password: string
+    URL: string
+  }
+  isGeneratePasswordLoading?: boolean
+  onSubmit: (
+    values: {
+      Username: string
+      Password: string
+      URL: string
+    },
+    actions: any
+  ) => void
+}
+
+const PassForm: React.FC<PassFormProps> = ({
   visible,
   loading,
-  title = 'New Pass',
+  title = 'Pass Pass',
   submitText = 'Save',
   onClose,
   onSubmit,
@@ -34,10 +57,8 @@ function NewForm({
     Username: '',
     Password: ''
   }
-}) {
-  const formRef = React.useRef()
-
-  const passwordFieldRef = React.useRef()
+}) => {
+  const formRef = React.useRef<any>()
 
   const [isVisiblePasswordPopup, setIsVisiblePasswordPopup] = React.useState(
     false
@@ -82,9 +103,9 @@ function NewForm({
       }
     >
       <Formik
-        innerRef={formRef}
+        innerRef={formRef as any}
         initialValues={initialValues}
-        validationSchema={NewPassSchema}
+        validationSchema={PassSchema}
         onSubmit={onSubmit}
       >
         {({ setFieldValue, values: { Password } }) => (
@@ -137,7 +158,6 @@ function NewForm({
                   onChange={() => {
                     setIsClosedPopup(true)
                   }}
-                  ref={passwordFieldRef}
                   disabled={isGeneratePasswordLoading}
                   prefix={
                     isGeneratePasswordLoading ? (
@@ -157,4 +177,4 @@ function NewForm({
   )
 }
 
-export default NewForm
+export default PassForm

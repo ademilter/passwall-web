@@ -1,4 +1,5 @@
 import React from 'react'
+import { NextPage } from 'next'
 import { hasToken } from '../utils'
 import { cache } from 'swr'
 import fetch from '../libs/fetch'
@@ -6,8 +7,8 @@ import PageLoading from '../components/page-loading'
 import LoginForm from '../components/login-form'
 import { message } from 'antd'
 
-function withLogin(Component) {
-  const WithLogin = (props) => {
+function withLogin(Component: NextPage<any>) {
+  const WithLogin = (props: any) => {
     const [errorMessage, setErrorMessage] = React.useState('')
 
     const [isLoading, setIsLoading] = React.useState(true)
@@ -18,7 +19,7 @@ function withLogin(Component) {
       setIsShownLoginFrom(true)
     }, [])
 
-    const onSubmit = React.useCallback(async (values, actions) => {
+    const onSubmit = React.useCallback(async (values: any, actions: any) => {
       try {
         localStorage.setItem('BASE_URL', values.BaseURL)
         const { token } = await fetch('/auth/signin', {
@@ -70,7 +71,7 @@ function withLogin(Component) {
     Component.displayName || Component.name || 'Component'
   }`
 
-  WithLogin.getIntialProps = Component.getIntialProps
+  WithLogin.getInitialProps = Component.getInitialProps
 
   return WithLogin
 }

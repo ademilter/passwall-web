@@ -22,6 +22,13 @@
     "yup": "^0.28.3"
   },
   "devDependencies": {
-    "prettier": "^2.0.4"
+    "@types/downloadjs": "^1.4.1",
+    "@types/node": "^13.13.2",
+    "@types/react": "^16.9.34",
+    "@types/react-highlight-words": "^0.16.1",
+    "@types/yup": "^0.28.0",
+    "eslint": "^6.8.0",
+    "prettier": "^2.0.4",
+    "typescript": "^3.8.3"
   }
 }

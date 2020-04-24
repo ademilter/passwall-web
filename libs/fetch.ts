@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-unfetch'
 import { isServer } from '../utils'
 
-function parseStatus(code, res) {
+function parseStatus(code: number, res: Promise<any>) {
   return new Promise((resolve, reject) => {
     if (code >= 200 && code < 300) {
       res.then((response) => resolve(response))
@@ -13,13 +13,16 @@ function parseStatus(code, res) {
   })
 }
 
-function parseError(err) {
+function parseError(err: any) {
   return new Promise((resolve, reject) =>
     reject({ code: err.code, message: err.message || 'An error occurred' })
   )
 }
 
-export default (path, options = { method: 'GET' }) => {
+export default (
+  path: string,
+  options: any = { method: 'GET' }
+): Promise<any> => {
   const URL = isServer()
     ? process.env.BASE_URL
     : localStorage.getItem('BASE_URL') || process.env.BASE_URL

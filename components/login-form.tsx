@@ -41,8 +41,16 @@ const FormItemList = [
     type: 'password'
   }
 ]
-
-function LoginForm({
+type LoginFormProps = {
+  initialValues?: {
+    Username: string
+    Password: string
+    BaseURL: string
+  }
+  errorMessage?: string
+  onSubmit: (values: any, actions: any) => void
+}
+const LoginForm: React.FC<LoginFormProps> = ({
   initialValues = {
     Username: '',
     Password: '',
@@ -50,7 +58,7 @@ function LoginForm({
   },
   onSubmit,
   errorMessage
-}) {
+}) => {
   return (
     <div className="login-wrapper">
       <div className="login-card">

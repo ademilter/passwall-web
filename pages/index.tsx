@@ -1,17 +1,22 @@
 import * as React from 'react'
+import { NextPage } from 'next'
 import useSWR from 'swr'
 import { message } from 'antd'
 import download from 'downloadjs'
 
 import fetch from '../libs/fetch'
 
-import NewForm from '../components/new-form'
+import PassForm from '../components/pass-form'
 import Header from '../components/header'
 import PassTable from '../components/table'
 import { hasToken } from '../utils'
 import withLogin from '../hoc/withLogin'
 
-function HomePage({ showLoginForm }) {
+type HomePageProps = {
+  showLoginForm: () => void
+}
+
+const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
   const [showNewModal, setNewModal] = React.useState(false)
   const [
     isGeneratePasswordLoading,
@@ -214,7 +219,9 @@ function HomePage({ showLoginForm }) {
         />
       </div>
 
-      <NewForm
+      <PassForm
+        title="New Pass"
+        submitText="Save"
         visible={showNewModal}
         loading={isCreateLoading}
         onClose={onModalClose}

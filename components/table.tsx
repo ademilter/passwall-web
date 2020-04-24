@@ -2,24 +2,32 @@ import * as React from 'react'
 import { blue, red } from '@ant-design/colors'
 import { trimEllip } from '../utils'
 import { Table, Input, Popconfirm, Tooltip, Typography } from 'antd'
-import NewForm from './new-form'
+import PassForm from './pass-form'
 import Highlighter from 'react-highlight-words'
 import { CloseOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons'
-
 import PasswordField from './password-field'
 
-function PassTable({
+type PassTableProps = {
+  loading: boolean
+  data: any
+  onDeletePass: (id: string) => void
+  onUpdatePass: (id: string, values: any, cb: () => void) => void
+  isUpdateLoading: boolean
+  isDeleteLoading: boolean
+}
+
+const PassTable: React.FC<PassTableProps> = ({
   loading,
   data,
   onDeletePass,
   onUpdatePass,
   isUpdateLoading,
   isDeleteLoading
-}) {
+}) => {
   const [searchText, setSearchText] = React.useState('')
-  const [dataTable, setDataTable] = React.useState([])
-  const [updatedRecord, setUpdatedRecord] = React.useState(null)
-  const [deletedRecord, setDeletedRecord] = React.useState(null)
+  const [dataTable, setDataTable] = React.useState<any[]>([])
+  const [updatedRecord, setUpdatedRecord] = React.useState<any>(null)
+  const [deletedRecord, setDeletedRecord] = React.useState<any>(null)
 
   const onModalClose = React.useCallback(() => {
     setUpdatedRecord(null)
@@ -33,9 +41,9 @@ function PassTable({
         title: 'Url',
         dataIndex: 'URL',
         ellipsis: true,
-        sorter: (a, b) => a.URL.localeCompare(b.URL),
+        sorter: (a: any, b: any) => a.URL.localeCompare(b.URL),
         sortDirections: ['descend', 'ascend'],
-        render: (text) => (
+        render: (text: string) => (
           <Highlighter
             highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
             searchWords={[searchText]}
@@ -47,7 +55,7 @@ function PassTable({
       {
         title: 'Username',
         dataIndex: 'Username',
-        render: (text) => (
+        render: (text: string) => (
           <Typography.Paragraph style={{ marginBottom: 0 }} copyable={{ text }}>
             {trimEllip(text, 12)}
           </Typography.Paragraph>
@@ -56,12 +64,12 @@ function PassTable({
       {
         title: 'Password',
         dataIndex: 'Password',
-        render: (text) => <PasswordField>{text}</PasswordField>
+        render: (text: string) => <PasswordField>{text}</PasswordField>
       },
       {
         key: 'action',
         width: 80,
-        render: (text, record) => {
+        render: (text: string, record: any) => {
           const isDeleteLoadingForRecord =
             deletedRecord && deletedRecord.ID === record.ID && isDeleteLoading
 
@@ -119,7 +127,7 @@ function PassTable({
   }, [])
 
   const handleUpdatePasswordModalSubmit = React.useCallback(
-    (values, actions) => {
+    (values: any, actions: any) => {
       onUpdatePass(updatedRecord.ID, values, () => {
         actions.setSubmitting(false)
         setUpdatedRecord(null)
@@ -131,7 +139,7 @@ function PassTable({
   React.useEffect(() => {
     setDataTable(
       searchText.length
-        ? data.filter((pass) =>
+        ? data.filter((pass: any) =>
             pass.URL.toString()
               .toLocaleLowerCase()
               .includes(searchText.toLocaleLowerCase())
@@ -159,11 +167,11 @@ function PassTable({
       <Table
         size="small"
         loading={loading}
-        columns={columns}
+        columns={columns as any}
         rowKey="ID"
         dataSource={dataTable}
       />
-      <NewForm
+      <PassForm
         title="Update Pass"
         submitText="Update"
         visible={isShownUpdateFormModal}
