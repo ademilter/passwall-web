@@ -16,9 +16,7 @@ COPY --from=builder /app/ /app/
 
 COPY ./pages ./pages
 
-COPY ./components ./components
-
-COPY ./libs ./libs
+COPY ./src ./src
 
 COPY ./styles ./styles
 

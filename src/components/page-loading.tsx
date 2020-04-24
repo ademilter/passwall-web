@@ -1,5 +1,5 @@
-import React from 'react'
-import { Spin } from 'antd'
+import React from 'react';
+import { Spin } from 'antd';
 
 function PageLoading() {
   return (
@@ -7,6 +7,6 @@ function PageLoading() {
       <h1>PassWall</h1>
       <Spin />
     </div>
-  )
+  );
 }
-export default PageLoading
+export default PageLoading;
