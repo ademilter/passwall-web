@@ -1,18 +1,18 @@
-export const isServer = () => typeof window === 'undefined'
+export const isServer = () => typeof window === 'undefined';
 
 const isValidToken = (token: string) =>
-  token && /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/.test(token)
+  Boolean(token && /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/.test(token));
 
 export const hasToken = () => {
   if (isServer()) {
-    return false
+    return false;
   }
 
-  const token = localStorage.getItem('TOKEN')
+  const token = localStorage.getItem('TOKEN');
 
-  return isValidToken(token || '')
-}
+  return isValidToken(token || '');
+};
 
 export function trimEllip(str: string, length: number) {
-  return str.length > length ? `${str.substring(0, length)}...` : str
+  return str.length > length ? `${str.substring(0, length)}...` : str;
 }

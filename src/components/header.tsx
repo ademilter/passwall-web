@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { Space, Button, Typography, Dropdown, Menu } from 'antd'
+import * as React from 'react';
+import { Space, Button, Typography, Dropdown, Menu } from 'antd';
 import {
   ReloadOutlined,
   PlusOutlined,
@@ -8,21 +8,21 @@ import {
   ExportOutlined,
   SaveOutlined,
   RollbackOutlined,
-  LogoutOutlined
-} from '@ant-design/icons'
+  LogoutOutlined,
+} from '@ant-design/icons';
 
-const { Title } = Typography
+const { Title } = Typography;
 
 type HeaderProps = {
-  loading: boolean
-  onModalOpen?: () => void
-  onDataRefresh?: () => void
-  onLogout?: () => void
-  onExport?: () => void
-  onImport?: (file: File) => void
-  onBackup?: () => void
-  onRestore?: () => void
-}
+  loading: boolean;
+  onModalOpen?: () => void;
+  onDataRefresh?: () => void;
+  onLogout?: () => void;
+  onExport?: () => void;
+  onImport?: (file: File) => void;
+  onBackup?: () => void;
+  onRestore?: () => void;
+};
 
 const Header: React.FC<HeaderProps> = ({
   loading,
@@ -32,36 +32,36 @@ const Header: React.FC<HeaderProps> = ({
   onExport,
   onImport,
   onBackup,
-  onRestore
+  onRestore,
 }) => {
-  const fileInput = React.useRef<any>()
+  const fileInput = React.useRef<HTMLInputElement>();
 
   const handleImport = React.useCallback(() => {
     if (fileInput.current) {
-      fileInput.current.click()
+      fileInput.current.click();
     }
-  }, [])
+  }, []);
 
   const handleFileChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (onImport && e.target.files) {
-        onImport(e.target.files[0])
+        onImport(e.target.files[0]);
       }
     },
-    [onImport]
-  )
+    [onImport],
+  );
 
   const handleDataRefresh = React.useCallback(() => {
     if (onDataRefresh) {
-      onDataRefresh()
+      onDataRefresh();
     }
-  }, [onDataRefresh])
+  }, [onDataRefresh]);
 
   const handleModalOpen = React.useCallback(() => {
     if (onModalOpen) {
-      onModalOpen()
+      onModalOpen();
     }
-  }, [onModalOpen])
+  }, [onModalOpen]);
 
   const ActionsMenu = (
     <Menu className="header-dropdown-menu">
@@ -70,7 +70,7 @@ const Header: React.FC<HeaderProps> = ({
         <input
           type="file"
           id="file"
-          ref={fileInput}
+          ref={fileInput as any} // eslint-disable-line @typescript-eslint/no-explicit-any
           style={{ display: 'none' }}
           accept=".csv"
           onChange={handleFileChange}
@@ -96,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({
         Logout
       </Menu.Item>
     </Menu>
-  )
+  );
 
   return (
     <header className="header">
@@ -105,40 +105,29 @@ const Header: React.FC<HeaderProps> = ({
           PassWall
         </Title>
 
-        <Button
-          shape="circle"
-          loading={loading}
-          icon={<ReloadOutlined />}
-          onClick={handleDataRefresh}
-        />
+        <Button shape="circle" loading={loading} icon={<ReloadOutlined />} onClick={handleDataRefresh} />
       </Space>
 
       <Space>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleModalOpen}
-        >
+        <Button type="primary" icon={<PlusOutlined />} onClick={handleModalOpen}>
           New Pass
         </Button>
 
         <Dropdown overlay={ActionsMenu} placement="bottomCenter">
-          <Button
-            shape="circle"
-            loading={loading}
-            icon={<EllipsisOutlined />}
-          />
+          <Button shape="circle" loading={loading} icon={<EllipsisOutlined />} />
         </Dropdown>
       </Space>
 
-      <style jsx>{`
-        .header {
-          display: flex;
-          justify-content: space-between;
-        }
-      `}</style>
+      <style jsx>
+        {`
+          .header {
+            display: flex;
+            justify-content: space-between;
+          }
+        `}
+      </style>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

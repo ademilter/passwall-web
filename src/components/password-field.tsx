@@ -1,17 +1,17 @@
-import * as React from 'react'
-import { Typography, Button, Space, Tooltip } from 'antd'
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+import * as React from 'react';
+import { Typography, Button, Space, Tooltip } from 'antd';
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
-const { Paragraph } = Typography
+const { Paragraph } = Typography;
 
-const paragraphStyle = { marginBottom: 0 }
+const paragraphStyle = { marginBottom: 0 };
 
 function PasswordField({ children }: { children: string }) {
-  const [show, setShow] = React.useState(false)
+  const [show, setShow] = React.useState(false);
 
-  const showToggle = React.useCallback(() => setShow((prev) => !prev), [])
+  const showToggle = React.useCallback(() => setShow(prev => !prev), []);
 
-  const copyConfig = React.useMemo(() => ({ text: children }), [children])
+  const copyConfig = React.useMemo(() => ({ text: children }), [children]);
 
   return (
     <Space size={0}>
@@ -24,7 +24,7 @@ function PasswordField({ children }: { children: string }) {
         </Button>
       </Tooltip>
     </Space>
-  )
+  );
 }
 
-export default PasswordField
+export default PasswordField;

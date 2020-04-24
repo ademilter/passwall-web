@@ -1,47 +1,29 @@
-import * as React from 'react'
-import { Modal, Button, Popconfirm } from 'antd'
-import { Form, FormItem, Input } from 'formik-antd'
-import { Formik } from 'formik'
-import {
-  GlobalOutlined,
-  UserOutlined,
-  LockOutlined,
-  LoadingOutlined
-} from '@ant-design/icons'
+import * as React from 'react';
+import { Modal, Button, Popconfirm } from 'antd';
+import { Form, FormItem, Input } from 'formik-antd';
+import { Formik, FormikHelpers } from 'formik';
+import { GlobalOutlined, UserOutlined, LockOutlined, LoadingOutlined } from '@ant-design/icons';
 
-import * as Yup from 'yup'
+import * as Yup from 'yup';
+import { LoginParamter } from '../helpers/Login';
 
 const PassSchema = Yup.object().shape({
   URL: Yup.string().trim().required('Required'),
   Username: Yup.string().trim().required('Required'),
-  Password: Yup.string()
-    .min(2, 'Too Short!')
-    .max(128, 'Too Long!')
-    .required('Required')
-})
+  Password: Yup.string().min(2, 'Too Short!').max(128, 'Too Long!').required('Required'),
+});
 
 type PassFormProps = {
-  visible: boolean
-  loading: boolean
-  title: string
-  submitText: string
-  onClose: () => void
-  generatePassword?: (cb: (password: string) => void) => void
-  initialValues?: {
-    Username: string
-    Password: string
-    URL: string
-  }
-  isGeneratePasswordLoading?: boolean
-  onSubmit: (
-    values: {
-      Username: string
-      Password: string
-      URL: string
-    },
-    actions: any
-  ) => void
-}
+  visible: boolean;
+  loading: boolean;
+  title: string;
+  submitText: string;
+  onClose: () => void;
+  generatePassword?: (cb: (password: string) => void) => void;
+  initialValues?: LoginParamter;
+  isGeneratePasswordLoading?: boolean;
+  onSubmit: (values: LoginParamter, actions: FormikHelpers<LoginParamter>) => void;
+};
 
 const PassForm: React.FC<PassFormProps> = ({
   visible,
@@ -55,28 +37,26 @@ const PassForm: React.FC<PassFormProps> = ({
   initialValues = {
     URL: '',
     Username: '',
-    Password: ''
-  }
+    Password: '',
+  },
 }) => {
-  const formRef = React.useRef<any>()
+  const formRef = React.useRef<{ handleSubmit: () => void }>();
 
-  const [isVisiblePasswordPopup, setIsVisiblePasswordPopup] = React.useState(
-    false
-  )
+  const [isVisiblePasswordPopup, setIsVisiblePasswordPopup] = React.useState(false);
 
-  const [isClosedPopup, setIsClosedPopup] = React.useState(false)
+  const [isClosedPopup, setIsClosedPopup] = React.useState(false);
 
   const onTriggerSubmit = React.useCallback(() => {
-    if (!formRef.current) return
-    formRef.current.handleSubmit()
-  }, [])
+    if (!formRef.current) return;
+    formRef.current.handleSubmit();
+  }, []);
 
   React.useEffect(() => {
     if (!visible) {
-      setIsVisiblePasswordPopup(false)
-      setIsClosedPopup(false)
+      setIsVisiblePasswordPopup(false);
+      setIsClosedPopup(false);
     }
-  }, [visible])
+  }, [visible]);
 
   return (
     <Modal
@@ -84,25 +64,20 @@ const PassForm: React.FC<PassFormProps> = ({
       visible={visible}
       closable={false}
       maskClosable={false}
-      destroyOnClose={true}
+      destroyOnClose
       footer={
         <>
           <Button key="close" shape="round" onClick={onClose}>
             Cancel
           </Button>
-          <Button
-            key="save"
-            shape="round"
-            type="primary"
-            loading={loading}
-            onClick={onTriggerSubmit}
-          >
+          <Button key="save" shape="round" type="primary" loading={loading} onClick={onTriggerSubmit}>
             {submitText}
           </Button>
         </>
       }
     >
       <Formik
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         innerRef={formRef as any}
         initialValues={initialValues}
         validationSchema={PassSchema}
@@ -110,39 +85,26 @@ const PassForm: React.FC<PassFormProps> = ({
       >
         {({ setFieldValue, values: { Password } }) => (
           <Form layout="vertical">
-            <FormItem label="URL" name="URL" required={true}>
-              <Input
-                name="URL"
-                prefix={<GlobalOutlined />}
-                placeholder="https://example.com"
-              />
+            <FormItem label="URL" name="URL" required>
+              <Input name="URL" prefix={<GlobalOutlined />} placeholder="https://example.com" />
             </FormItem>
 
-            <FormItem label="Username" name="Username" required={true}>
-              <Input
-                name="Username"
-                prefix={<UserOutlined />}
-                placeholder="Username or email"
-              />
+            <FormItem label="Username" name="Username" required>
+              <Input name="Username" prefix={<UserOutlined />} placeholder="Username or email" />
             </FormItem>
 
-            <FormItem label="Password" name="Password" required={true}>
+            <FormItem label="Password" name="Password" required>
               <Popconfirm
-                visible={
-                  isVisiblePasswordPopup &&
-                  !isClosedPopup &&
-                  generatePassword &&
-                  !Password
-                }
+                visible={isVisiblePasswordPopup && !isClosedPopup && generatePassword && !Password}
                 onVisibleChange={setIsVisiblePasswordPopup}
                 onCancel={() => setIsClosedPopup(true)}
                 title="Do you want to use a strong auto-generated password?"
                 onConfirm={async () => {
                   if (generatePassword) {
-                    setIsVisiblePasswordPopup(false)
-                    generatePassword((password) => {
-                      setFieldValue('Password', password)
-                    })
+                    setIsVisiblePasswordPopup(false);
+                    generatePassword(password => {
+                      setFieldValue('Password', password);
+                    });
                   }
                 }}
                 okText="Yes"
@@ -152,20 +114,14 @@ const PassForm: React.FC<PassFormProps> = ({
                   name="Password"
                   onFocus={() => {
                     setTimeout(() => {
-                      setIsVisiblePasswordPopup(true)
-                    }, 500)
+                      setIsVisiblePasswordPopup(true);
+                    }, 500);
                   }}
                   onChange={() => {
-                    setIsClosedPopup(true)
+                    setIsClosedPopup(true);
                   }}
                   disabled={isGeneratePasswordLoading}
-                  prefix={
-                    isGeneratePasswordLoading ? (
-                      <LoadingOutlined />
-                    ) : (
-                      <LockOutlined />
-                    )
-                  }
+                  prefix={isGeneratePasswordLoading ? <LoadingOutlined /> : <LockOutlined />}
                   placeholder="• • • • • • • •"
                 />
               </Popconfirm>
@@ -174,7 +130,7 @@ const PassForm: React.FC<PassFormProps> = ({
         )}
       </Formik>
     </Modal>
-  )
-}
+  );
+};
 
-export default PassForm
+export default PassForm;
