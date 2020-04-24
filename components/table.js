@@ -1,31 +1,31 @@
 import * as React from 'react'
-import { Table, Input, Popconfirm, Typography } from 'antd'
+import { blue, red } from '@ant-design/colors'
 import { trimEllip } from '../utils'
+import { Table, Input, Popconfirm, Tooltip } from 'antd'
+import NewForm from './new-form'
 import Highlighter from 'react-highlight-words'
+import { CloseOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons'
 
 import PasswordField from './password-field'
 
-function PassTable({ loading, data, onDeletePass }) {
+function PassTable({
+  loading,
+  data,
+  onDeletePass,
+  onUpdatePass,
+  isUpdateLoading,
+  isDeleteLoading
+}) {
   const [searchText, setSearchText] = React.useState('')
   const [dataTable, setDataTable] = React.useState([])
+  const [updatedRecord, setUpdatedRecord] = React.useState(null)
+  const [deletedRecord, setDeletedRecord] = React.useState(null)
 
-  React.useEffect(() => {
-    setDataTable(
-      searchText.length
-        ? data.filter((pass) =>
-            pass.URL.toString()
-              .toLocaleLowerCase()
-              .includes(searchText.toLocaleLowerCase())
-          )
-        : data
-    )
-  }, [searchText])
+  const onModalClose = React.useCallback(() => {
+    setUpdatedRecord(null)
+  }, [])
 
-  React.useEffect(() => {
-    if (Array.isArray(data)) {
-      setDataTable(data)
-    }
-  }, [data])
+  const isShownUpdateFormModal = Boolean(updatedRecord)
 
   const columns = React.useMemo(
     () => [
@@ -61,24 +61,90 @@ function PassTable({ loading, data, onDeletePass }) {
       {
         key: 'action',
         width: 80,
-        render: (text, record) => (
-          <Popconfirm
-            title="Are you sure delete this pass?"
-            onConfirm={() => onDeletePass(record.ID)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a href="#">Delete</a>
-          </Popconfirm>
-        )
+        render: (text, record) => {
+          const isDeleteLoadingForRecord =
+            deletedRecord && deletedRecord.ID === record.ID && isDeleteLoading
+
+          const visibilityProps = isDeleteLoadingForRecord
+            ? { visible: false }
+            : {}
+
+          return (
+            <>
+              <Tooltip title="Edit" placement="bottom">
+                <EditOutlined
+                  onClick={() => setUpdatedRecord(record)}
+                  style={{
+                    color: blue.primary
+                  }}
+                />
+              </Tooltip>
+              &nbsp;
+              <Popconfirm
+                {...visibilityProps}
+                title="Are you sure delete this pass?"
+                onConfirm={() => {
+                  setDeletedRecord(record)
+                  onDeletePass(record.ID)
+                }}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Tooltip title="Delete" placement="bottom" {...visibilityProps}>
+                  {isDeleteLoadingForRecord ? (
+                    <LoadingOutlined
+                      style={{
+                        color: red.primary
+                      }}
+                    />
+                  ) : (
+                    <CloseOutlined
+                      style={{
+                        color: red.primary
+                      }}
+                    />
+                  )}
+                </Tooltip>
+              </Popconfirm>
+            </>
+          )
+        }
       }
     ],
-    [searchText]
+    [searchText, deletedRecord, onDeletePass]
   )
 
   const handleInputChange = React.useCallback((event) => {
     setSearchText(event.target.value)
   }, [])
+
+  const handleUpdatePasswordModalSubmit = React.useCallback(
+    (values, actions) => {
+      onUpdatePass(updatedRecord.ID, values, () => {
+        actions.setSubmitting(false)
+        setUpdatedRecord(null)
+      })
+    },
+    [updatedRecord]
+  )
+
+  React.useEffect(() => {
+    setDataTable(
+      searchText.length
+        ? data.filter((pass) =>
+            pass.URL.toString()
+              .toLocaleLowerCase()
+              .includes(searchText.toLocaleLowerCase())
+          )
+        : data
+    )
+  }, [searchText])
+
+  React.useEffect(() => {
+    if (Array.isArray(data)) {
+      setDataTable(data)
+    }
+  }, [data])
 
   return (
     <div>
@@ -96,6 +162,15 @@ function PassTable({ loading, data, onDeletePass }) {
         columns={columns}
         rowKey="ID"
         dataSource={dataTable}
+      />
+      <NewForm
+        title="Update Pass"
+        submitText="Update"
+        visible={isShownUpdateFormModal}
+        loading={isUpdateLoading}
+        onClose={onModalClose}
+        onSubmit={handleUpdatePasswordModalSubmit}
+        initialValues={updatedRecord}
       />
     </div>
   )

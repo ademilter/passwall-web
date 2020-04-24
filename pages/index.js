@@ -22,6 +22,10 @@ function HomePage({ showLoginForm }) {
 
   const isLoading = (!error && !data) || isValidating
 
+  const [isUpdateLoading, setIsUpdateLoading] = React.useState(false)
+  const [isCreateLoading, setIsCreateLoading] = React.useState(false)
+  const [isDeleteLoading, setIsDeleteLoading] = React.useState(false)
+
   const passData = error || !Array.isArray(data) ? [] : data
 
   React.useEffect(() => {
@@ -132,6 +136,7 @@ function HomePage({ showLoginForm }) {
 
   const onCreatePass = React.useCallback(
     async (values, actions) => {
+      setIsCreateLoading(true)
       try {
         await fetch('/logins/', {
           method: 'POST',
@@ -143,6 +148,7 @@ function HomePage({ showLoginForm }) {
       } catch (e) {
         message.error(e.message)
       } finally {
+        setIsCreateLoading(false)
         actions.setSubmitting(false)
       }
     },
@@ -151,12 +157,34 @@ function HomePage({ showLoginForm }) {
 
   const onDeletePass = React.useCallback(
     async (id) => {
+      setIsDeleteLoading(true)
       try {
         await fetch(`/logins/${id}`, { method: 'DELETE' })
         message.success('Password deleted')
         revalidate()
       } catch (e) {
         message.error(e.message)
+      }
+      setIsDeleteLoading(false)
+    },
+    [revalidate]
+  )
+
+  const onUpdatePass = React.useCallback(
+    async (id, values, callback) => {
+      setIsUpdateLoading(true)
+      try {
+        await fetch(`/logins/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify(values)
+        })
+        message.success('Password updated')
+        revalidate()
+      } catch (e) {
+        message.error(e.message)
+      } finally {
+        setIsUpdateLoading(false)
+        callback()
       }
     },
     [revalidate]
@@ -177,14 +205,18 @@ function HomePage({ showLoginForm }) {
 
       <div className="app-table">
         <PassTable
+          isUpdateLoading={isUpdateLoading}
+          isDeleteLoading={isDeleteLoading}
           loading={isLoading}
           onDeletePass={onDeletePass}
+          onUpdatePass={onUpdatePass}
           data={passData}
         />
       </div>
 
       <NewForm
         visible={showNewModal}
+        loading={isCreateLoading}
         onClose={onModalClose}
         generatePassword={generatePassword}
         onSubmit={onCreatePass}
