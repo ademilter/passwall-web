@@ -1,13 +1,11 @@
 import fetch from 'isomorphic-unfetch'
 import { isServer } from '../utils'
-import Router from 'next/router'
 
 function parseStatus(code, res) {
   return new Promise((resolve, reject) => {
     if (code >= 200 && code < 300) {
       res.then((response) => resolve(response))
     } else if (code === 401) {
-      Router.push('/login')
       res.then((response) => reject(response))
     } else {
       res.then((response) => reject(response))
@@ -17,7 +15,7 @@ function parseStatus(code, res) {
 
 function parseError(err) {
   return new Promise((resolve, reject) =>
-    reject({ code: err.code, message: err.message })
+    reject({ code: err.code, message: err.message || 'An error occurred' })
   )
 }
 

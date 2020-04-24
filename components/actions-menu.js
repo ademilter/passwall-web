@@ -29,7 +29,7 @@ const Actions = ({
   )
 
   return (
-    <Menu className="dropdown-menu">
+    <Menu className="header-dropdown-menu">
       <Menu.Item onClick={handleImport}>
         <ImportOutlined />
         <input
@@ -38,7 +38,7 @@ const Actions = ({
           ref={fileInput}
           style={{ display: 'none' }}
           accept=".csv"
-          onChange={(e) => handleFileChange(e)}
+          onChange={handleFileChange}
         />
         Import
       </Menu.Item>

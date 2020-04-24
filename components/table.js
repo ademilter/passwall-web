@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { blue, red } from '@ant-design/colors'
+import { trimEllip } from '../utils'
 import { Table, Input, Popconfirm, Tooltip } from 'antd'
 import NewForm from './new-form'
 import Highlighter from 'react-highlight-words'
@@ -48,7 +49,7 @@ function PassTable({
         dataIndex: 'Username',
         render: (text) => (
           <Typography.Paragraph style={{ marginBottom: 0 }} copyable>
-            {text}
+            {trimEllip(text, 12)}
           </Typography.Paragraph>
         )
       },

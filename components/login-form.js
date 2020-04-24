@@ -1,18 +1,13 @@
 import * as React from 'react'
 import { Typography, Alert } from 'antd'
-import { cache } from 'swr'
-import { message } from 'antd'
 import { Form, FormItem, Input, SubmitButton } from 'formik-antd'
 import { Formik } from 'formik'
 import { UserOutlined, LockOutlined, GlobalOutlined } from '@ant-design/icons'
 import * as Yup from 'yup'
-import Router from 'next/router'
-
-import fetch from '../libs/fetch'
 
 const { Title, Paragraph } = Typography
 
-const urlRegExp = /^(?:([a-z0-9+.-]+):\/\/)(?:\S+(?::\S*)?@)?(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/;
+const urlRegExp = /^(?:([a-z0-9+.-]+):\/\/)(?:\S+(?::\S*)?@)?(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/
 
 const LoginSchema = Yup.object().shape({
   Username: Yup.string().required('Required'),
@@ -27,7 +22,7 @@ const FormItemList = [
     required: true,
     placeholder: process.env.BASE_URL,
     prefix: <GlobalOutlined />,
-    type: "text"
+    type: 'text'
   },
   {
     label: 'Username',
@@ -35,7 +30,7 @@ const FormItemList = [
     required: true,
     placeholder: 'Username',
     prefix: <UserOutlined />,
-    type: "text"
+    type: 'text'
   },
   {
     label: 'Password',
@@ -43,76 +38,19 @@ const FormItemList = [
     required: true,
     placeholder: 'Password',
     prefix: <LockOutlined />,
-    type: "password"
+    type: 'password'
   }
 ]
 
-function LoginPage() {
-  const [errorMessage, setErrorMessage] = React.useState("");
-  const onSubmit = React.useCallback(async (values, actions) => {
-    try {
-      localStorage.setItem('BASE_URL', values.BaseURL)
-      const { token } = await fetch('/auth/signin', {
-        method: 'POST',
-        body: JSON.stringify(values)
-      })
-      localStorage.setItem('TOKEN', token)
-      cache.clear()
-      Router.push('/')
-    } catch (e) {
-      setErrorMessage(e.message)
-      message.error(e.message)
-    } finally {
-      actions.setSubmitting(false)
-    }
-  }, [])
-
-  const initialValues = React.useMemo(
-    () => ({
-      Username: '',
-      Password: '',
-      BaseURL: process.env.BASE_URL
-    }),
-    []
-  )
-
-  const FormItemList = [
-    {
-      label: 'Base URL',
-      name: 'BaseURL',
-      required: true,
-      placeholder: process.env.BASE_URL,
-      prefix: <GlobalOutlined />,
-      type: "text"
-    },
-    {
-      label: 'Username',
-      name: 'Username',
-      required: true,
-      placeholder: 'Username',
-      prefix: <UserOutlined />,
-      type: "text"
-    },
-    {
-      label: 'Password',
-      name: 'Password',
-      required: true,
-      placeholder: 'Password',
-      prefix: <LockOutlined />,
-      type: "password",
-    }
-  ]
-
-  const FormItems = () => {
-    return FormItemList.map(
-      ({ label, required, name, placeholder, prefix, type }) => (
-        <FormItem label={label} name={name} required={required} key={name}>
-          <Input name={name} placeholder={placeholder} prefix={prefix} type={type}/>
-        </FormItem>
-      )
-    )
-  }
-
+function LoginForm({
+  initialValues = {
+    Username: '',
+    Password: '',
+    BaseURL: process.env.BASE_URL
+  },
+  onSubmit,
+  errorMessage
+}) {
   return (
     <div className="login-wrapper">
       <div className="login-card">
@@ -124,18 +62,37 @@ function LoginPage() {
           <Paragraph>Login to the Dashboard</Paragraph>
           <Formik
             className="login-form"
-            initialValues={{
-              Username: '',
-              Password: '',
-              BaseURL: process.env.BASE_URL
-            }}
+            initialValues={initialValues}
             validationSchema={LoginSchema}
             onSubmit={onSubmit}
           >
             {() => (
               <Form layout="vertical">
-                <FormItems />
-                {errorMessage && <Alert style={{marginBottom: 15}} showIcon message={errorMessage} type="error"/>}
+                {FormItemList.map(
+                  ({ label, required, name, placeholder, prefix, type }) => (
+                    <FormItem
+                      label={label}
+                      name={name}
+                      required={required}
+                      key={name}
+                    >
+                      <Input
+                        name={name}
+                        placeholder={placeholder}
+                        prefix={prefix}
+                        type={type}
+                      />
+                    </FormItem>
+                  )
+                )}
+                {errorMessage && (
+                  <Alert
+                    style={{ marginBottom: 15 }}
+                    showIcon
+                    message={errorMessage}
+                    type="error"
+                  />
+                )}
                 <div className="cta">
                   <SubmitButton className="btn-submit">Login</SubmitButton>
                 </div>
@@ -186,25 +143,7 @@ function LoginPage() {
         `}
       </style>
     </div>
-    // <div className="container">
-
-    //   <style jsx>{`
-    //     .container {
-    //       max-width: 340px;
-    //       width: 100%;
-    //       margin-left: auto;
-    //       height: 100vh;
-    //       margin-right: auto;
-    //       display: flex;
-    //       flex-direction: column;
-    //       justify-content: center;
-    //     }
-    //     .cta {
-    //       margin-top: 10px;
-    //     }
-    //   `}</style>
-    // </div>
   )
 }
 
-export default LoginPage
+export default LoginForm
