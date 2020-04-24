@@ -48,7 +48,7 @@ function PassTable({
         title: 'Username',
         dataIndex: 'Username',
         render: (text) => (
-          <Typography.Paragraph style={{ marginBottom: 0 }} copyable>
+          <Typography.Paragraph style={{ marginBottom: 0 }} copyable={{ text }}>
             {trimEllip(text, 12)}
           </Typography.Paragraph>
         )
