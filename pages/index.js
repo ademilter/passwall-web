@@ -2,7 +2,6 @@ import * as React from 'react'
 import useSWR from 'swr'
 import { message } from 'antd'
 import download from 'downloadjs'
-import Router from 'next/router'
 
 import fetch from '../libs/fetch'
 
@@ -10,8 +9,9 @@ import NewForm from '../components/new-form'
 import Header from '../components/header'
 import PassTable from '../components/table'
 import { hasToken } from '../utils'
+import withLogin from '../hoc/withLogin'
 
-function HomePage() {
+function HomePage({ showLoginForm }) {
   const [showNewModal, setNewModal] = React.useState(false)
   const [
     isGeneratePasswordLoading,
@@ -32,7 +32,7 @@ function HomePage() {
 
   const handleLogout = React.useCallback(() => {
     localStorage.removeItem('TOKEN')
-    Router.replace('/login')
+    showLoginForm()
   }, [])
 
   const handleExport = React.useCallback(async () => {
@@ -205,4 +205,4 @@ function HomePage() {
   )
 }
 
-export default HomePage
+export default withLogin(HomePage)

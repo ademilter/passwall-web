@@ -67,7 +67,7 @@ function Header({
           New Pass
         </Button>
 
-        <Dropdown overlay={ActionsMenu}>
+        <Dropdown overlay={ActionsMenu} placement="bottomCenter">
           <Button
             shape="circle"
             loading={loading}

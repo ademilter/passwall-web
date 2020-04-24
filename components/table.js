@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Table, Input, Popconfirm, Typography } from 'antd'
+import { trimEllip } from '../utils'
 import Highlighter from 'react-highlight-words'
 
 import PasswordField from './password-field'
@@ -48,7 +49,7 @@ function PassTable({ loading, data, onDeletePass }) {
         dataIndex: 'Username',
         render: (text) => (
           <Typography.Paragraph style={{ marginBottom: 0 }} copyable>
-            {text}
+            {trimEllip(text, 12)}
           </Typography.Paragraph>
         )
       },
@@ -72,7 +73,7 @@ function PassTable({ loading, data, onDeletePass }) {
         )
       }
     ],
-    []
+    [searchText]
   )
 
   const handleInputChange = React.useCallback((event) => {
