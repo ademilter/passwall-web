@@ -1,6 +1,8 @@
 import * as React from 'react'
 import useSWR from 'swr'
 import { message } from 'antd'
+import download from 'downloadjs'
+import Router from 'next/router'
 
 import fetch from '../libs/fetch'
 
@@ -31,6 +33,52 @@ function HomePage() {
       message.error(error.message)
     }
   }, [error])
+
+  const handleLogout = React.useCallback(() => {
+    localStorage.removeItem('TOKEN')
+    Router.replace('/login')
+  }, [])
+
+  const handleExport = React.useCallback(async () => {
+    try {
+      const data = await fetch(`/logins/export`, {
+        method: 'POST',
+        text: true
+      })
+
+      download(data, 'passwall.csv', 'text/csv')
+
+      message.success('Passwords exported')
+      revalidate()
+    } catch (e) {
+      console.log(e)
+      message.error(e.message)
+    }
+  }, [])
+
+  const handleImport = React.useCallback(async (file) => {
+    try {
+      const form = new FormData()
+      form.append('File', file, 'passwords.csv')
+      form.append('URL', 'URL')
+      form.append('Username', 'Username')
+      form.append('Password', 'Password')
+
+      await fetch(`/logins/import`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('TOKEN')
+        },
+        body: form
+      })
+
+      message.success('Import successfully')
+      revalidate()
+    } catch (e) {
+      console.log(e)
+      message.error(e.message)
+    }
+  }, [])
 
   const onModalClose = React.useCallback(() => {
     setNewModal(false)
@@ -120,6 +168,9 @@ function HomePage() {
         loading={isLoading}
         onDataRefresh={revalidate}
         onModalOpen={onModalOpen}
+        onLogout={handleLogout}
+        onExport={handleExport}
+        onImport={handleImport}
       />
 
       <div className="app-table">

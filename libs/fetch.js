@@ -37,6 +37,9 @@ export default (path, options = { method: 'GET' }) => {
     },
     ...options
   })
-    .then((res) => parseStatus(res.status, res.json()))
+    .then((res) => {
+      const body = options.text ? res.text() : res.json()
+      return parseStatus(res.status, body)
+    })
     .catch((err) => parseError(err))
 }
