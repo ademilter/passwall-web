@@ -139,7 +139,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     setisCheckPasswordLoading(true);
     let urls: string[];
     try {
-      let response: CheckPasswordResponse = await fetch('/logins/check-password', {
+      const response: CheckPasswordResponse = await fetch('/logins/check-password', {
         method: 'POST',
         body: JSON.stringify({ Password: pwd }),
       });

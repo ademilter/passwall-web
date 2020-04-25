@@ -66,16 +66,14 @@ const PassForm: React.FC<PassFormProps> = ({
   const onCheckSamePasswordURLs = React.useCallback(() => {
     if (checkPassword && formRef.current) {
       checkPassword(formRef.current.values.Password).then(urls => {
-        console.log(typeof urls);
-        console.log(urls);
-        if (urls.length == 0) {
+        if (urls.length === 0) {
           onTriggerSubmit();
         } else {
           setsamePasswordURLs(urls);
         }
       });
     }
-  }, []);
+  }, [checkPassword, onTriggerSubmit]);
 
   return (
     <Modal
