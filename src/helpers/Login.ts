@@ -16,3 +16,6 @@ export interface SingInParameter {
   Username: string;
   Password: string;
 }
+export interface CheckPasswordResponse {
+  URLs: string[];
+}
