@@ -47,6 +47,7 @@ const PassForm: React.FC<PassFormProps> = ({
   const formRef = React.useRef<{ handleSubmit: () => void; values: LoginParamter }>();
 
   const [isVisiblePasswordPopup, setIsVisiblePasswordPopup] = React.useState(false);
+  const [isConfirmationVisible, setisConfirmationVisible] = React.useState(false);
   const [samePasswordURLs, setsamePasswordURLs] = React.useState<string[]>([]);
 
   const [isClosedPopup, setIsClosedPopup] = React.useState(false);
@@ -69,6 +70,7 @@ const PassForm: React.FC<PassFormProps> = ({
         if (urls.length === 0) {
           onTriggerSubmit();
         } else {
+          setisConfirmationVisible(true);
           setsamePasswordURLs(urls);
         }
       });
@@ -88,6 +90,7 @@ const PassForm: React.FC<PassFormProps> = ({
             Cancel
           </Button>
           <Popconfirm
+            visible={isConfirmationVisible}
             title={
               <div>
                 <div>You have used this password on urls:</div>
@@ -100,10 +103,10 @@ const PassForm: React.FC<PassFormProps> = ({
               </div>
             }
             onConfirm={() => {
-              // setDeletedRecord(record);
-              // onDeletePass(record);
               onTriggerSubmit();
+              setisConfirmationVisible(false);
             }}
+            onCancel={() => setisConfirmationVisible(false)}
             okText="Yes"
             cancelText="No"
           >
