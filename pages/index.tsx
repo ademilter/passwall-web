@@ -12,7 +12,7 @@ import Header from '../src/components/header';
 import PassTable from '../src/components/table';
 import { hasToken } from '../src/utils';
 import withLogin from '../src/hoc/withLogin';
-import { LoginParamter, Login } from '../src/helpers/Login';
+import { LoginParamter, Login, CheckPasswordResponse } from '../src/helpers/Login';
 
 type HomePageProps = {
   showLoginForm: () => void;
@@ -21,6 +21,7 @@ type HomePageProps = {
 const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
   const [showNewModal, setNewModal] = React.useState(false);
   const [isGeneratePasswordLoading, setIsGeneratePasswordLoading] = React.useState(false);
+  const [isCheckPasswordLoading, setisCheckPasswordLoading] = React.useState(false);
 
   const { data, error, revalidate, isValidating } = useSWR('/logins/', fetch);
 
@@ -134,7 +135,22 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     }
     setIsGeneratePasswordLoading(false);
   }, []);
-
+  const checkPassword = React.useCallback(async (pwd: string) => {
+    setisCheckPasswordLoading(true);
+    let urls: string[];
+    try {
+      const response: CheckPasswordResponse = await fetch('/logins/check-password', {
+        method: 'POST',
+        body: JSON.stringify({ Password: pwd }),
+      });
+      urls = response.URLs;
+    } catch (passwordError) {
+      urls = [];
+      message.error(passwordError.message);
+    }
+    setisCheckPasswordLoading(false);
+    return urls;
+  }, []);
   const onCreatePass = React.useCallback(
     async (values: LoginParamter, actions: FormikHelpers<LoginParamter>) => {
       setIsCreateLoading(true);
@@ -222,8 +238,10 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         loading={isCreateLoading}
         onClose={onModalClose}
         generatePassword={generatePassword}
+        checkPassword={checkPassword}
         onSubmit={onCreatePass}
         isGeneratePasswordLoading={isGeneratePasswordLoading}
+        isCheckPasswordLoading={isCheckPasswordLoading}
       />
 
       <style jsx>

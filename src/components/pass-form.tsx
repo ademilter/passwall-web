@@ -20,8 +20,10 @@ type PassFormProps = {
   submitText: string;
   onClose: () => void;
   generatePassword?: (cb: (password: string) => void) => void;
+  checkPassword?: (password: string) => Promise<string[]>;
   initialValues?: LoginParamter;
   isGeneratePasswordLoading?: boolean;
+  isCheckPasswordLoading?: boolean;
   onSubmit: (values: LoginParamter, actions: FormikHelpers<LoginParamter>) => void;
 };
 
@@ -34,15 +36,19 @@ const PassForm: React.FC<PassFormProps> = ({
   onSubmit,
   generatePassword,
   isGeneratePasswordLoading,
+  checkPassword,
+  isCheckPasswordLoading,
   initialValues = {
     URL: '',
     Username: '',
     Password: '',
   },
 }) => {
-  const formRef = React.useRef<{ handleSubmit: () => void }>();
+  const formRef = React.useRef<{ handleSubmit: () => void; values: LoginParamter }>();
 
   const [isVisiblePasswordPopup, setIsVisiblePasswordPopup] = React.useState(false);
+  const [isConfirmationVisible, setisConfirmationVisible] = React.useState(false);
+  const [samePasswordURLs, setsamePasswordURLs] = React.useState<string[]>([]);
 
   const [isClosedPopup, setIsClosedPopup] = React.useState(false);
 
@@ -58,6 +64,19 @@ const PassForm: React.FC<PassFormProps> = ({
     }
   }, [visible]);
 
+  const onCheckSamePasswordURLs = React.useCallback(() => {
+    if (checkPassword && formRef.current) {
+      checkPassword(formRef.current.values.Password).then(urls => {
+        if (urls.length === 0) {
+          onTriggerSubmit();
+        } else {
+          setisConfirmationVisible(true);
+          setsamePasswordURLs(urls);
+        }
+      });
+    }
+  }, [checkPassword, onTriggerSubmit]);
+
   return (
     <Modal
       title={title}
@@ -70,9 +89,31 @@ const PassForm: React.FC<PassFormProps> = ({
           <Button key="close" shape="round" onClick={onClose}>
             Cancel
           </Button>
-          <Button key="save" shape="round" type="primary" loading={loading} onClick={onTriggerSubmit}>
-            {submitText}
-          </Button>
+          <Popconfirm
+            visible={isConfirmationVisible}
+            title={
+              <div>
+                <div>You have used this password on urls:</div>
+                <ul>
+                  {samePasswordURLs.slice(0, 5).map(url => (
+                    <li>{url}</li>
+                  ))}
+                </ul>
+                <div>Are you sure to use this password again?</div>
+              </div>
+            }
+            onConfirm={() => {
+              onTriggerSubmit();
+              setisConfirmationVisible(false);
+            }}
+            onCancel={() => setisConfirmationVisible(false)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button key="save" shape="round" type="primary" loading={loading} onClick={onCheckSamePasswordURLs}>
+              {submitText}
+            </Button>
+          </Popconfirm>
         </>
       }
     >
@@ -120,8 +161,8 @@ const PassForm: React.FC<PassFormProps> = ({
                   onChange={() => {
                     setIsClosedPopup(true);
                   }}
-                  disabled={isGeneratePasswordLoading}
-                  prefix={isGeneratePasswordLoading ? <LoadingOutlined /> : <LockOutlined />}
+                  disabled={isGeneratePasswordLoading || isCheckPasswordLoading}
+                  prefix={isGeneratePasswordLoading || isCheckPasswordLoading ? <LoadingOutlined /> : <LockOutlined />}
                   placeholder="• • • • • • • •"
                 />
               </Popconfirm>
