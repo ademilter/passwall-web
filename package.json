@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p $PORT",
     "prod": "next export",
     "eslint": "eslint ./src ./pages --ext .jsx,.ts,.tsx,.js --cache",
     "prettier": "prettier \"src/**/*\" \"pages/**/*\"",
