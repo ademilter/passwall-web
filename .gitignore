@@ -2,6 +2,7 @@ node_modules
 .next
 .vscode
 .eslintcache
+
 .DS_Store
 yarn.lock
 .idea
