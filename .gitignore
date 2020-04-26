@@ -4,3 +4,4 @@ node_modules
 .eslintcache
 
 .DS_Store
+yarn.lock
