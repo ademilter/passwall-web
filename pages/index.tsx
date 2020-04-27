@@ -21,7 +21,7 @@ type HomePageProps = {
 const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
   const [showNewModal, setNewModal] = React.useState(false);
   const [isGeneratePasswordLoading, setIsGeneratePasswordLoading] = React.useState(false);
-  const [isCheckPasswordLoading, setisCheckPasswordLoading] = React.useState(false);
+  const [isCheckPasswordLoading, setIsCheckPasswordLoading] = React.useState(false);
 
   const { data, error, revalidate, isValidating } = useSWR('/logins/', fetch);
 
@@ -135,8 +135,8 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     }
     setIsGeneratePasswordLoading(false);
   }, []);
-  const checkPassword = React.useCallback(async (pwd: string) => {
-    setisCheckPasswordLoading(true);
+  const onCheckPassword = React.useCallback(async (pwd: string) => {
+    setIsCheckPasswordLoading(true);
     let urls: string[];
     try {
       const response: CheckPasswordResponse = await fetch('/logins/check-password', {
@@ -148,7 +148,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
       urls = [];
       message.error(passwordError.message);
     }
-    setisCheckPasswordLoading(false);
+    setIsCheckPasswordLoading(false);
     return urls;
   }, []);
   const onCreatePass = React.useCallback(
@@ -224,9 +224,11 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         <PassTable
           isUpdateLoading={isUpdateLoading}
           isDeleteLoading={isDeleteLoading}
+          isCheckPasswordLoading={isCheckPasswordLoading}
           loading={isLoading}
           onDeletePass={onDeletePass}
           onUpdatePass={onUpdatePass}
+          onCheckPassword={onCheckPassword}
           data={passData}
         />
       </div>
@@ -238,7 +240,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         loading={isCreateLoading}
         onClose={onModalClose}
         generatePassword={generatePassword}
-        checkPassword={checkPassword}
+        onCheckPassword={onCheckPassword}
         onSubmit={onCreatePass}
         isGeneratePasswordLoading={isGeneratePasswordLoading}
         isCheckPasswordLoading={isCheckPasswordLoading}
