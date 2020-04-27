@@ -72,8 +72,8 @@ const PassForm: React.FC<PassFormProps> = ({
           urls.length === 0 ||
           // Checks if the single same password is the current login which is being updated
           (urls.length === 1 &&
-            urls[0] == formRef.current?.values.URL &&
-            initialValues.Password == formRef.current.values.Password)
+            urls[0] === formRef.current?.values.URL &&
+            initialValues.Password === formRef.current.values.Password)
         ) {
           onTriggerSubmit();
         } else {
