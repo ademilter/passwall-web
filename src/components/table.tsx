@@ -15,8 +15,10 @@ type PassTableProps = {
   data: Login[];
   onDeletePass: (record: Login) => void;
   onUpdatePass: (id: number | string, values: LoginParamter, cb: () => void) => void;
+  onCheckPassword?: (password: string) => Promise<string[]>;
   isUpdateLoading: boolean;
   isDeleteLoading: boolean;
+  isCheckPasswordLoading?: boolean;
 };
 
 const PassTable: React.FC<PassTableProps> = ({
@@ -24,8 +26,10 @@ const PassTable: React.FC<PassTableProps> = ({
   data,
   onDeletePass,
   onUpdatePass,
+  onCheckPassword,
   isUpdateLoading,
   isDeleteLoading,
+  isCheckPasswordLoading,
 }) => {
   const [searchText, setSearchText] = React.useState('');
   const [dataTable, setDataTable] = React.useState<Login[]>([]);
@@ -168,7 +172,9 @@ const PassTable: React.FC<PassTableProps> = ({
         loading={isUpdateLoading}
         onClose={onModalClose}
         onSubmit={handleUpdatePasswordModalSubmit}
+        onCheckPassword={onCheckPassword}
         initialValues={updatedRecord}
+        isCheckPasswordLoading={isCheckPasswordLoading}
       />
     </div>
   );

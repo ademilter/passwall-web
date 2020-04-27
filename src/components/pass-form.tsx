@@ -20,7 +20,7 @@ type PassFormProps = {
   submitText: string;
   onClose: () => void;
   generatePassword?: (cb: (password: string) => void) => void;
-  checkPassword?: (password: string) => Promise<string[]>;
+  onCheckPassword?: (password: string) => Promise<string[]>;
   initialValues?: LoginParamter;
   isGeneratePasswordLoading?: boolean;
   isCheckPasswordLoading?: boolean;
@@ -36,7 +36,7 @@ const PassForm: React.FC<PassFormProps> = ({
   onSubmit,
   generatePassword,
   isGeneratePasswordLoading,
-  checkPassword,
+  onCheckPassword,
   isCheckPasswordLoading,
   initialValues = {
     URL: '',
@@ -61,21 +61,30 @@ const PassForm: React.FC<PassFormProps> = ({
     if (!visible) {
       setIsVisiblePasswordPopup(false);
       setIsClosedPopup(false);
+      setisConfirmationVisible(false);
     }
   }, [visible]);
 
   const onCheckSamePasswordURLs = React.useCallback(() => {
-    if (checkPassword && formRef.current) {
-      checkPassword(formRef.current.values.Password).then(urls => {
-        if (urls.length === 0) {
+    if (onCheckPassword && formRef.current) {
+      onCheckPassword(formRef.current.values.Password).then(urls => {
+        if (
+          urls.length === 0 ||
+          // Checks if the single same password is the current login which is being updated
+          (urls.length === 1 &&
+            urls[0] === formRef.current?.values.URL &&
+            initialValues.Password === formRef.current.values.Password)
+        ) {
           onTriggerSubmit();
         } else {
           setisConfirmationVisible(true);
           setsamePasswordURLs(urls);
         }
       });
+    } else {
+      onTriggerSubmit();
     }
-  }, [checkPassword, onTriggerSubmit]);
+  }, [onCheckPassword, onTriggerSubmit, initialValues]);
 
   return (
     <Modal
