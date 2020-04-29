@@ -5,8 +5,9 @@ import { Formik, FormikHelpers } from 'formik';
 import { UserOutlined, LockOutlined, GlobalOutlined } from '@ant-design/icons';
 import * as Yup from 'yup';
 import { SingInParameter } from '../helpers/Login';
+import PassTitle from './title';
 
-const { Title, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
 const urlRegExp = /^(?:([a-z0-9+.-]+):\/\/)(?:\S+(?::\S*)?@)?(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/; // eslint-disable-line max-len
 
@@ -54,7 +55,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ initialValues, onSubmit, errorMes
         <img src="/images/login-illustration.svg" alt="Login" />
       </div>
       <div className="form-box">
-        <Title level={3}>PassWall</Title>
+        <PassTitle level={2} />
         <Paragraph>Login to the Dashboard</Paragraph>
         <Formik
           className="login-form"

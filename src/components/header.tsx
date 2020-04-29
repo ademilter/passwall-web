@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Space, Button, Typography, Dropdown, Menu } from 'antd';
+import { Space, Button, Dropdown, Menu } from 'antd';
 import {
   ReloadOutlined,
   PlusOutlined,
@@ -10,8 +10,7 @@ import {
   RollbackOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
-
-const { Title } = Typography;
+import PassTitle from './title';
 
 type HeaderProps = {
   loading: boolean;
@@ -101,9 +100,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="header">
       <Space>
-        <Title style={{ marginBottom: 0 }} level={2}>
-          PassWall
-        </Title>
+        <PassTitle style={{ marginBottom: 0 }} level={2} />
 
         <Button shape="circle" loading={loading} icon={<ReloadOutlined />} onClick={handleDataRefresh} />
       </Space>
