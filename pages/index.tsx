@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { NextPage } from 'next';
 import { FormikHelpers } from 'formik';
 import useSWR from 'swr';
@@ -19,32 +19,32 @@ type HomePageProps = {
 };
 
 const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
-  const [showNewModal, setNewModal] = React.useState(false);
-  const [isGeneratePasswordLoading, setIsGeneratePasswordLoading] = React.useState(false);
-  const [isCheckPasswordLoading, setIsCheckPasswordLoading] = React.useState(false);
+  const [showNewModal, setNewModal] = useState(false);
+  const [isGeneratePasswordLoading, setIsGeneratePasswordLoading] = useState(false);
+  const [isCheckPasswordLoading, setIsCheckPasswordLoading] = useState(false);
 
   const { data, error, revalidate, isValidating } = useSWR('/logins/', fetch);
 
   const isLoading = (!error && !data) || isValidating;
 
-  const [isUpdateLoading, setIsUpdateLoading] = React.useState(false);
-  const [isCreateLoading, setIsCreateLoading] = React.useState(false);
-  const [isDeleteLoading, setIsDeleteLoading] = React.useState(false);
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+  const [isCreateLoading, setIsCreateLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
   const passData = error || !Array.isArray(data) ? [] : data;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error && hasToken()) {
       message.error(error.message);
     }
   }, [error]);
 
-  const handleLogout = React.useCallback(() => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem('TOKEN');
     showLoginForm();
   }, [showLoginForm]);
 
-  const handleExport = React.useCallback(async () => {
+  const handleExport = useCallback(async () => {
     try {
       const file = await fetch('/logins/export', {
         method: 'POST',
@@ -59,7 +59,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     }
   }, []);
 
-  const handleImport = React.useCallback(
+  const handleImport = useCallback(
     async (file: File) => {
       try {
         const form = new FormData();
@@ -85,7 +85,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     [revalidate],
   );
 
-  const handleBackup = React.useCallback(async () => {
+  const handleBackup = useCallback(async () => {
     try {
       await fetch('/logins/backup', {
         method: 'POST',
@@ -97,7 +97,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     }
   }, []);
 
-  const handleRestore = React.useCallback(async () => {
+  const handleRestore = useCallback(async () => {
     try {
       await fetch('/logins/restore', {
         method: 'POST',
@@ -110,15 +110,15 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     }
   }, [revalidate]);
 
-  const onModalClose = React.useCallback(() => {
+  const onModalClose = useCallback(() => {
     setNewModal(false);
   }, []);
 
-  const onModalOpen = React.useCallback(() => {
+  const onModalOpen = useCallback(() => {
     setNewModal(true);
   }, []);
 
-  const generatePassword = React.useCallback(async callback => {
+  const generatePassword = useCallback(async callback => {
     setIsGeneratePasswordLoading(true);
     try {
       const password = await fetch('/logins/generate-password', {
@@ -135,7 +135,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     }
     setIsGeneratePasswordLoading(false);
   }, []);
-  const onCheckPassword = React.useCallback(async (pwd: string) => {
+  const onCheckPassword = useCallback(async (pwd: string) => {
     setIsCheckPasswordLoading(true);
     let urls: string[];
     try {
@@ -151,7 +151,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     setIsCheckPasswordLoading(false);
     return urls;
   }, []);
-  const onCreatePass = React.useCallback(
+  const onCreatePass = useCallback(
     async (values: LoginParamter, actions: FormikHelpers<LoginParamter>) => {
       setIsCreateLoading(true);
       try {
@@ -172,7 +172,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     [revalidate],
   );
 
-  const onDeletePass = React.useCallback(
+  const onDeletePass = useCallback(
     async (pass: Login) => {
       setIsDeleteLoading(true);
       try {
@@ -187,7 +187,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     [revalidate],
   );
 
-  const onUpdatePass = React.useCallback(
+  const onUpdatePass = useCallback(
     async (id: string | number, values: LoginParamter, callback: () => void) => {
       setIsUpdateLoading(true);
       try {
