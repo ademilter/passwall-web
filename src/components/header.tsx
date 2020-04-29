@@ -10,6 +10,7 @@ import {
   RollbackOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
+import PassTitle from './title';
 
 const { Title } = Typography;
 
@@ -101,9 +102,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="header">
       <Space>
-        <Title style={{ marginBottom: 0 }} level={2}>
-          PassWall
-        </Title>
+        <PassTitle style={{ marginBottom: 0 }} level={2} />
 
         <Button shape="circle" loading={loading} icon={<ReloadOutlined />} onClick={handleDataRefresh} />
       </Space>

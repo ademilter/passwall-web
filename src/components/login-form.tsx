@@ -5,6 +5,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { UserOutlined, LockOutlined, GlobalOutlined } from '@ant-design/icons';
 import * as Yup from 'yup';
 import { SingInParameter } from '../helpers/Login';
+import PassTitle from './title';
 
 const { Title, Paragraph } = Typography;
 
@@ -54,10 +55,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ initialValues, onSubmit, errorMes
         <img src="/images/login-illustration.svg" alt="Login" />
       </div>
       <div className="form-box">
-        <Title level={3}>
-          <img src="/images/icon_256.png" alt="Logo" height="48" width="48" />
-          <span style={{ fontWeight: 'bold' }}>Pass</span>Wall
-        </Title>
+        <PassTitle level={2} />
         <Paragraph>Login to the Dashboard</Paragraph>
         <Formik
           className="login-form"
