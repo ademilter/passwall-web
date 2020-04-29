@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Space, Button, Typography, Dropdown, Menu } from 'antd';
+import { Space, Button, Dropdown, Menu } from 'antd';
 import {
   ReloadOutlined,
   PlusOutlined,
@@ -11,8 +11,6 @@ import {
   LogoutOutlined,
 } from '@ant-design/icons';
 import PassTitle from './title';
-
-const { Title } = Typography;
 
 type HeaderProps = {
   loading: boolean;
