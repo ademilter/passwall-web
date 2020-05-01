@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { Modal, Button, Popconfirm } from 'antd';
 import { Form, FormItem, Input } from 'formik-antd';
 import { Formik, FormikHelpers } from 'formik';
@@ -44,20 +44,20 @@ const PassForm: React.FC<PassFormProps> = ({
     password: '',
   },
 }) => {
-  const formRef = React.useRef<{ handleSubmit: () => void; values: LoginParamter }>();
+  const formRef = useRef<{ handleSubmit: () => void; values: LoginParamter }>();
 
-  const [isVisiblePasswordPopup, setIsVisiblePasswordPopup] = React.useState(false);
-  const [isConfirmationVisible, setisConfirmationVisible] = React.useState(false);
-  const [samePasswordURLs, setsamePasswordURLs] = React.useState<string[]>([]);
+  const [isVisiblePasswordPopup, setIsVisiblePasswordPopup] = useState(false);
+  const [isConfirmationVisible, setisConfirmationVisible] = useState(false);
+  const [samePasswordURLs, setsamePasswordURLs] = useState<string[]>([]);
 
-  const [isClosedPopup, setIsClosedPopup] = React.useState(false);
+  const [isClosedPopup, setIsClosedPopup] = useState(false);
 
-  const onTriggerSubmit = React.useCallback(() => {
+  const onTriggerSubmit = useCallback(() => {
     if (!formRef.current) return;
     formRef.current.handleSubmit();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!visible) {
       setIsVisiblePasswordPopup(false);
       setIsClosedPopup(false);
@@ -65,7 +65,7 @@ const PassForm: React.FC<PassFormProps> = ({
     }
   }, [visible]);
 
-  const onCheckSamePasswordURLs = React.useCallback(() => {
+  const onCheckSamePasswordURLs = useCallback(() => {
     if (onCheckPassword && formRef.current) {
       onCheckPassword(formRef.current.values.password).then(urls => {
         if (

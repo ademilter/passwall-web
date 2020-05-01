@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { NextPage } from 'next';
 import { cache } from 'swr';
 import { message } from 'antd';
@@ -11,17 +11,15 @@ import { SingInParameter } from '../helpers/Login';
 
 function withLogin<T>(Component: NextPage<T>) {
   const WithLogin = (props: T) => {
-    const [errorMessage, setErrorMessage] = React.useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [isShownLoginForm, setIsShownLoginFrom] = useState(false);
 
-    const [isLoading, setIsLoading] = React.useState(true);
-
-    const [isShownLoginForm, setIsShownLoginFrom] = React.useState(false);
-
-    const showLoginForm = React.useCallback(() => {
+    const showLoginForm = useCallback(() => {
       setIsShownLoginFrom(true);
     }, []);
 
-    const onSubmit = React.useCallback(async (values: SingInParameter) => {
+    const onSubmit = useCallback(async (values: SingInParameter) => {
       try {
         localStorage.setItem('BASE_URL', values.base_url);
         const { access_token, refresh_token } = await fetch('/auth/signin', {
@@ -38,7 +36,7 @@ function withLogin<T>(Component: NextPage<T>) {
       }
     }, []);
 
-    const checkToken = React.useCallback(async () => {
+    const checkToken = useCallback(async () => {
       if (!hasToken()) {
         setIsLoading(false);
         setIsShownLoginFrom(true);
@@ -56,7 +54,7 @@ function withLogin<T>(Component: NextPage<T>) {
       }
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
       checkToken();
     }, [checkToken]);
 
