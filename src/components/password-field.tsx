@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Typography, Button, Space, Tooltip } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
@@ -7,11 +7,11 @@ const { Paragraph } = Typography;
 const paragraphStyle = { marginBottom: 0 };
 
 function PasswordField({ children }: { children: string }) {
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = useState(false);
 
-  const showToggle = React.useCallback(() => setShow(prev => !prev), []);
+  const showToggle = useCallback(() => setShow(prev => !prev), []);
 
-  const copyConfig = React.useMemo(() => ({ text: children }), [children]);
+  const copyConfig = useMemo(() => ({ text: children }), [children]);
 
   return (
     <Space size={0}>

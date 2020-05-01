@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useRef, useCallback } from 'react';
 import { Space, Button, Dropdown, Menu } from 'antd';
 import {
   ReloadOutlined,
@@ -33,15 +33,15 @@ const Header: React.FC<HeaderProps> = ({
   onBackup,
   onRestore,
 }) => {
-  const fileInput = React.useRef<HTMLInputElement>();
+  const fileInput = useRef<HTMLInputElement>();
 
-  const handleImport = React.useCallback(() => {
+  const handleImport = useCallback(() => {
     if (fileInput.current) {
       fileInput.current.click();
     }
   }, []);
 
-  const handleFileChange = React.useCallback(
+  const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (onImport && e.target.files) {
         onImport(e.target.files[0]);
@@ -50,13 +50,13 @@ const Header: React.FC<HeaderProps> = ({
     [onImport],
   );
 
-  const handleDataRefresh = React.useCallback(() => {
+  const handleDataRefresh = useCallback(() => {
     if (onDataRefresh) {
       onDataRefresh();
     }
   }, [onDataRefresh]);
 
-  const handleModalOpen = React.useCallback(() => {
+  const handleModalOpen = useCallback(() => {
     if (onModalOpen) {
       onModalOpen();
     }

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { ColumnType as TableColumnType } from 'antd/lib/table';
 import { FormikHelpers } from 'formik';
 import { blue, red } from '@ant-design/colors';
@@ -31,18 +31,18 @@ const PassTable: React.FC<PassTableProps> = ({
   isDeleteLoading,
   isCheckPasswordLoading,
 }) => {
-  const [searchText, setSearchText] = React.useState('');
-  const [dataTable, setDataTable] = React.useState<Login[]>([]);
-  const [updatedRecord, setUpdatedRecord] = React.useState<Login | undefined>();
-  const [deletedRecord, setDeletedRecord] = React.useState<Login | undefined>();
+  const [searchText, setSearchText] = useState('');
+  const [dataTable, setDataTable] = useState<Login[]>([]);
+  const [updatedRecord, setUpdatedRecord] = useState<Login | undefined>();
+  const [deletedRecord, setDeletedRecord] = useState<Login | undefined>();
 
-  const onModalClose = React.useCallback(() => {
+  const onModalClose = useCallback(() => {
     setUpdatedRecord(undefined);
   }, []);
 
   const isShownUpdateFormModal = Boolean(updatedRecord);
 
-  const columns = React.useMemo(() => {
+  const columns = useMemo(() => {
     const urlColumn: TableColumnType<Login> = {
       title: 'Url',
       dataIndex: 'url',
@@ -124,11 +124,11 @@ const PassTable: React.FC<PassTableProps> = ({
     return [urlColumn, usernameColumn, passwordColumn, actionColumn];
   }, [searchText, deletedRecord, isDeleteLoading, onDeletePass]);
 
-  const handleInputChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
   }, []);
 
-  const handleUpdatePasswordModalSubmit = React.useCallback(
+  const handleUpdatePasswordModalSubmit = useCallback(
     (values: LoginParamter, actions: FormikHelpers<LoginParamter>) => {
       if (updatedRecord) {
         onUpdatePass(updatedRecord.id, values, () => {
@@ -140,7 +140,7 @@ const PassTable: React.FC<PassTableProps> = ({
     [onUpdatePass, updatedRecord],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setDataTable(
       searchText.length
         ? data.filter(pass => pass.url.toString().toLocaleLowerCase().includes(searchText.toLocaleLowerCase()))
@@ -148,7 +148,7 @@ const PassTable: React.FC<PassTableProps> = ({
     );
   }, [data, searchText]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (Array.isArray(data)) {
       setDataTable(data);
     }
