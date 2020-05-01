@@ -23,7 +23,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
   const [isGeneratePasswordLoading, setIsGeneratePasswordLoading] = useState(false);
   const [isCheckPasswordLoading, setIsCheckPasswordLoading] = useState(false);
 
-  const { data, error, revalidate, isValidating } = useSWR('/logins/', fetch);
+  const { data, error, revalidate, isValidating } = useSWR('/api/logins', fetch);
 
   const isLoading = (!error && !data) || isValidating;
 
@@ -46,7 +46,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
 
   const handleExport = useCallback(async () => {
     try {
-      const file = await fetch('/logins/export', {
+      const file = await fetch('/api/logins/export', {
         method: 'POST',
         text: true,
       });
@@ -63,12 +63,12 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     async (file: File) => {
       try {
         const form = new FormData();
-        form.append('File', file, 'passwords.csv');
-        form.append('URL', 'URL');
-        form.append('Username', 'Username');
-        form.append('Password', 'Password');
+        form.append('file', file, 'passwords.csv');
+        form.append('url', 'URL');
+        form.append('username', 'Username');
+        form.append('password', 'Password');
 
-        await fetch('/logins/import', {
+        await fetch('/api/logins/import', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
@@ -87,7 +87,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
 
   const handleBackup = useCallback(async () => {
     try {
-      await fetch('/logins/backup', {
+      await fetch('/api/logins/backup', {
         method: 'POST',
       });
 
@@ -99,7 +99,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
 
   const handleRestore = useCallback(async () => {
     try {
-      await fetch('/logins/restore', {
+      await fetch('/api/logins/restore', {
         method: 'POST',
       });
 
@@ -121,12 +121,12 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
   const generatePassword = useCallback(async callback => {
     setIsGeneratePasswordLoading(true);
     try {
-      const password = await fetch('/logins/generate-password', {
+      const password = await fetch('/api/logins/generate-password', {
         method: 'POST',
       });
 
-      if (password && password.Message) {
-        callback(password.Message);
+      if (password && password.message) {
+        callback(password.message);
       } else {
         message.error('There was an error creating the password.');
       }
@@ -139,11 +139,11 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     setIsCheckPasswordLoading(true);
     let urls: string[];
     try {
-      const response: CheckPasswordResponse = await fetch('/logins/check-password', {
+      const response: CheckPasswordResponse = await fetch('/api/logins/check-password', {
         method: 'POST',
-        body: JSON.stringify({ Password: pwd }),
+        body: JSON.stringify({ password: pwd }),
       });
-      urls = response.URLs;
+      urls = response.urls;
     } catch (passwordError) {
       urls = [];
       message.error(passwordError.message);
@@ -155,7 +155,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     async (values: LoginParamter, actions: FormikHelpers<LoginParamter>) => {
       setIsCreateLoading(true);
       try {
-        await fetch('/logins/', {
+        await fetch('/api/logins', {
           method: 'POST',
           body: JSON.stringify(values),
         });
@@ -176,7 +176,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     async (pass: Login) => {
       setIsDeleteLoading(true);
       try {
-        await fetch(`/logins/${pass.ID}`, { method: 'DELETE' });
+        await fetch(`/api/logins/${pass.id}`, { method: 'DELETE' });
         message.success('Password deleted');
         revalidate();
       } catch (e) {
@@ -191,7 +191,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     async (id: string | number, values: LoginParamter, callback: () => void) => {
       setIsUpdateLoading(true);
       try {
-        await fetch(`/logins/${id}`, {
+        await fetch(`/api/logins/${id}`, {
           method: 'PUT',
           body: JSON.stringify(values),
         });

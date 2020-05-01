@@ -8,9 +8,9 @@ import * as Yup from 'yup';
 import { LoginParamter } from '../helpers/Login';
 
 const PassSchema = Yup.object().shape({
-  URL: Yup.string().trim().required('Required'),
-  Username: Yup.string().trim().required('Required'),
-  Password: Yup.string().min(2, 'Too Short!').max(128, 'Too Long!').required('Required'),
+  url: Yup.string().trim().required('Required'),
+  username: Yup.string().trim().required('Required'),
+  password: Yup.string().min(2, 'Too Short!').max(128, 'Too Long!').required('Required'),
 });
 
 type PassFormProps = {
@@ -39,9 +39,9 @@ const PassForm: React.FC<PassFormProps> = ({
   onCheckPassword,
   isCheckPasswordLoading,
   initialValues = {
-    URL: '',
-    Username: '',
-    Password: '',
+    url: '',
+    username: '',
+    password: '',
   },
 }) => {
   const formRef = React.useRef<{ handleSubmit: () => void; values: LoginParamter }>();
@@ -67,13 +67,13 @@ const PassForm: React.FC<PassFormProps> = ({
 
   const onCheckSamePasswordURLs = React.useCallback(() => {
     if (onCheckPassword && formRef.current) {
-      onCheckPassword(formRef.current.values.Password).then(urls => {
+      onCheckPassword(formRef.current.values.password).then(urls => {
         if (
           urls.length === 0 ||
           // Checks if the single same password is the current login which is being updated
           (urls.length === 1 &&
-            urls[0] === formRef.current?.values.URL &&
-            initialValues.Password === formRef.current.values.Password)
+            urls[0] === formRef.current?.values.url &&
+            initialValues.password === formRef.current.values.password)
         ) {
           onTriggerSubmit();
         } else {
@@ -133,27 +133,27 @@ const PassForm: React.FC<PassFormProps> = ({
         validationSchema={PassSchema}
         onSubmit={onSubmit}
       >
-        {({ setFieldValue, values: { Password } }) => (
+        {({ setFieldValue, values: { password } }) => (
           <Form layout="vertical">
-            <FormItem label="URL" name="URL" required>
-              <Input name="URL" prefix={<GlobalOutlined />} placeholder="https://example.com" />
+            <FormItem label="URL" name="url" required>
+              <Input name="url" prefix={<GlobalOutlined />} placeholder="https://example.com" />
             </FormItem>
 
-            <FormItem label="Username" name="Username" required>
-              <Input name="Username" prefix={<UserOutlined />} placeholder="Username or email" />
+            <FormItem label="Username" name="username" required>
+              <Input name="username" prefix={<UserOutlined />} placeholder="Username or email" />
             </FormItem>
 
-            <FormItem label="Password" name="Password" required>
+            <FormItem label="Password" name="password" required>
               <Popconfirm
-                visible={isVisiblePasswordPopup && !isClosedPopup && generatePassword && !Password}
+                visible={isVisiblePasswordPopup && !isClosedPopup && generatePassword && !password}
                 onVisibleChange={setIsVisiblePasswordPopup}
                 onCancel={() => setIsClosedPopup(true)}
                 title="Do you want to use a strong auto-generated password?"
                 onConfirm={async () => {
                   if (generatePassword) {
                     setIsVisiblePasswordPopup(false);
-                    generatePassword(password => {
-                      setFieldValue('Password', password);
+                    generatePassword(pass => {
+                      setFieldValue('password', pass);
                     });
                   }
                 }}
@@ -161,7 +161,7 @@ const PassForm: React.FC<PassFormProps> = ({
                 cancelText="No"
               >
                 <Input.Password
-                  name="Password"
+                  name="password"
                   onFocus={() => {
                     setTimeout(() => {
                       setIsVisiblePasswordPopup(true);

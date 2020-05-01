@@ -45,9 +45,9 @@ const PassTable: React.FC<PassTableProps> = ({
   const columns = React.useMemo(() => {
     const urlColumn: TableColumnType<Login> = {
       title: 'Url',
-      dataIndex: 'URL',
+      dataIndex: 'url',
       ellipsis: true,
-      sorter: (a, b) => a.URL.localeCompare(b.URL),
+      sorter: (a, b) => a.url.localeCompare(b.url),
       sortDirections: ['descend', 'ascend'],
       render: text => (
         <Highlighter
@@ -60,7 +60,7 @@ const PassTable: React.FC<PassTableProps> = ({
     };
     const usernameColumn: TableColumnType<Login> = {
       title: 'Username',
-      dataIndex: 'Username',
+      dataIndex: 'username',
       render: text => (
         <Typography.Paragraph style={{ marginBottom: 0 }} copyable={{ text }}>
           {trimEllip(text, 12)}
@@ -69,14 +69,14 @@ const PassTable: React.FC<PassTableProps> = ({
     };
     const passwordColumn: TableColumnType<Login> = {
       title: 'Password',
-      dataIndex: 'Password',
+      dataIndex: 'password',
       render: text => <PasswordField>{text}</PasswordField>,
     };
     const actionColumn: TableColumnType<Login> = {
       key: 'action',
       width: 80,
       render: (text, record) => {
-        const isDeleteLoadingForRecord = deletedRecord && deletedRecord.ID === record.ID && isDeleteLoading;
+        const isDeleteLoadingForRecord = deletedRecord && deletedRecord.id === record.id && isDeleteLoading;
 
         const visibilityProps = isDeleteLoadingForRecord ? { visible: false } : {};
 
@@ -131,7 +131,7 @@ const PassTable: React.FC<PassTableProps> = ({
   const handleUpdatePasswordModalSubmit = React.useCallback(
     (values: LoginParamter, actions: FormikHelpers<LoginParamter>) => {
       if (updatedRecord) {
-        onUpdatePass(updatedRecord.ID, values, () => {
+        onUpdatePass(updatedRecord.id, values, () => {
           actions.setSubmitting(false);
           setUpdatedRecord(undefined);
         });
@@ -143,7 +143,7 @@ const PassTable: React.FC<PassTableProps> = ({
   React.useEffect(() => {
     setDataTable(
       searchText.length
-        ? data.filter(pass => pass.URL.toString().toLocaleLowerCase().includes(searchText.toLocaleLowerCase()))
+        ? data.filter(pass => pass.url.toString().toLocaleLowerCase().includes(searchText.toLocaleLowerCase()))
         : data,
     );
   }, [data, searchText]);
@@ -164,7 +164,7 @@ const PassTable: React.FC<PassTableProps> = ({
         onChange={handleInputChange}
       />
 
-      <Table<Login> size="small" loading={loading} columns={columns} rowKey="ID" dataSource={dataTable} />
+      <Table<Login> size="small" loading={loading} columns={columns} rowKey="id" dataSource={dataTable} />
       <PassForm
         title="Update Pass"
         submitText="Update"
