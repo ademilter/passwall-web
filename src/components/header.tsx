@@ -121,6 +121,16 @@ const Header: React.FC<HeaderProps> = ({
             display: flex;
             justify-content: space-between;
           }
+
+          .header-dropdown-menu {
+            border-radius: 0.375rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25) !important;
+            margin-top: 8px;
+          }
+
+          .header-dropdown-menu li {
+            min-width: 150px;
+          }
         `}
       </style>
     </header>
