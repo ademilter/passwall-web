@@ -64,9 +64,9 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
       try {
         const form = new FormData();
         form.append('file', file, 'passwords.csv');
-        form.append('url', 'url');
-        form.append('username', 'username');
-        form.append('password', 'password');
+        form.append('url', 'URL');
+        form.append('username', 'Username');
+        form.append('password', 'Password');
 
         await fetch('/api/logins/import', {
           method: 'POST',
