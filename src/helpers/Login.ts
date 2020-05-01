@@ -1,21 +1,22 @@
+/* eslint-disable camelcase */
 export interface Login {
-  ID: number;
-  URL: string;
-  Username: string;
-  Password: string;
+  id: number;
+  url: string;
+  username: string;
+  password: string;
 }
 
 export interface LoginParamter {
-  URL: string;
-  Username: string;
-  Password: string;
+  url: string;
+  username: string;
+  password: string;
 }
 
 export interface SingInParameter {
-  BaseURL: string;
-  Username: string;
-  Password: string;
+  base_url: string;
+  username: string;
+  password: string;
 }
 export interface CheckPasswordResponse {
-  URLs: string[];
+  urls: string[];
 }
