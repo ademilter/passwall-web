@@ -63,10 +63,10 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     async (file: File) => {
       try {
         const form = new FormData();
-        form.append('File', file, 'passwords.csv');
-        form.append('URL', 'URL');
-        form.append('Username', 'Username');
-        form.append('Password', 'Password');
+        form.append('file', file, 'passwords.csv');
+        form.append('url', 'url');
+        form.append('username', 'username');
+        form.append('password', 'password');
 
         await fetch('/api/logins/import', {
           method: 'POST',
@@ -141,9 +141,9 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     try {
       const response: CheckPasswordResponse = await fetch('/api/logins/check-password', {
         method: 'POST',
-        body: JSON.stringify({ Password: pwd }),
+        body: JSON.stringify({ password: pwd }),
       });
-      urls = response.URLs;
+      urls = response.urls;
     } catch (passwordError) {
       urls = [];
       message.error(passwordError.message);
@@ -176,7 +176,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     async (pass: Login) => {
       setIsDeleteLoading(true);
       try {
-        await fetch(`/api/logins/${pass.ID}`, { method: 'DELETE' });
+        await fetch(`/api/logins/${pass.id}`, { method: 'DELETE' });
         message.success('Password deleted');
         revalidate();
       } catch (e) {

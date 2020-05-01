@@ -12,15 +12,15 @@ const { Paragraph } = Typography;
 const urlRegExp = /^(?:([a-z0-9+.-]+):\/\/)(?:\S+(?::\S*)?@)?(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/; // eslint-disable-line max-len
 
 const LoginSchema = Yup.object().shape({
-  Username: Yup.string().required('Required'),
-  Password: Yup.string().required('Required'),
-  BaseURL: Yup.string().matches(urlRegExp, 'BaseURL must be a valid URL'),
+  username: Yup.string().required('Required'),
+  password: Yup.string().required('Required'),
+  base_url: Yup.string().matches(urlRegExp, 'BaseURL must be a valid URL'),
 });
 
 const FormItemList = [
   {
     label: 'Base URL',
-    name: 'BaseURL',
+    name: 'base_url',
     required: true,
     placeholder: process.env.BASE_URL,
     prefix: <GlobalOutlined />,
@@ -28,7 +28,7 @@ const FormItemList = [
   },
   {
     label: 'Username',
-    name: 'Username',
+    name: 'username',
     required: true,
     placeholder: 'Username',
     prefix: <UserOutlined />,
@@ -36,7 +36,7 @@ const FormItemList = [
   },
   {
     label: 'Password',
-    name: 'Password',
+    name: 'password',
     required: true,
     placeholder: 'Password',
     prefix: <LockOutlined />,
@@ -125,9 +125,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ initialValues, onSubmit, errorMes
 
 LoginForm.defaultProps = {
   initialValues: {
-    Username: '',
-    Password: '',
-    BaseURL: process.env.BASE_URL || '',
+    username: '',
+    password: '',
+    base_url: process.env.BASE_URL || '',
   },
 };
 

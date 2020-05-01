@@ -22,7 +22,7 @@ function withLogin<T>(Component: NextPage<T>) {
 
     const onSubmit = React.useCallback(async (values: SingInParameter) => {
       try {
-        localStorage.setItem('BASE_URL', values.BaseURL);
+        localStorage.setItem('BASE_URL', values.base_url);
         const { token } = await fetch('/auth/signin', {
           method: 'POST',
           body: JSON.stringify(values),
