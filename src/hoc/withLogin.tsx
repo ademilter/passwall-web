@@ -23,11 +23,12 @@ function withLogin<T>(Component: NextPage<T>) {
     const onSubmit = React.useCallback(async (values: SingInParameter) => {
       try {
         localStorage.setItem('BASE_URL', values.base_url);
-        const { token } = await fetch('/auth/signin', {
+        const { access_token, refresh_token } = await fetch('/auth/signin', {
           method: 'POST',
           body: JSON.stringify(values),
         });
-        localStorage.setItem('TOKEN', token);
+        localStorage.setItem('TOKEN', access_token);
+        localStorage.setItem('REFRESH_TOKEN', refresh_token);
         cache.clear();
         setIsShownLoginFrom(false);
       } catch (e) {
