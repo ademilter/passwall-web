@@ -125,8 +125,8 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         method: 'POST',
       });
 
-      if (password && password.Message) {
-        callback(password.Message);
+      if (password && password.message) {
+        callback(password.message);
       } else {
         message.error('There was an error creating the password.');
       }
