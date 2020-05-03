@@ -59,7 +59,6 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
       download(file, 'passwall.csv', 'text/csv');
 
       message.success('Passwords exported');
-
     } catch (e) {
       message.error(e.message);
     }
@@ -113,41 +112,44 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
       return [];
     }
   }, []);
+  const onBackupModalClose = useCallback(() => {
+    setShowBackupTable(false);
+    setBackupData([]);
+  }, []);
+
   const handleRestore = useCallback(() => {
     setIsBackupsLoading(true);
     setShowBackupTable(true);
     getBackups().then(backups => {
       setBackupData(backups);
       setIsBackupsLoading(false);
-    })
-  }, []);
-  const handleBackupSelected = useCallback(async (filename: string) => {
-    try {
-      setIsBackupsLoading(true)
-      await fetch('/api/logins/restore', {
-        method: 'POST',
-        body: JSON.stringify({ "name": filename })
-      });
-      revalidate();
-      setIsBackupsLoading(false)
-      onBackupModalClose()
-      message.success('Passwords restored');
-    } catch (e) {
-      setIsBackupsLoading(false)
-      message.error(e.message);
-    }
-  }, [revalidate])
+    });
+  }, [getBackups]);
+  const handleBackupSelected = useCallback(
+    async (filename: string) => {
+      try {
+        setIsBackupsLoading(true);
+        await fetch('/api/logins/restore', {
+          method: 'POST',
+          body: JSON.stringify({ name: filename }),
+        });
+        revalidate();
+        setIsBackupsLoading(false);
+        onBackupModalClose();
+        message.success('Passwords restored');
+      } catch (e) {
+        setIsBackupsLoading(false);
+        message.error(e.message);
+      }
+    },
+    [revalidate, onBackupModalClose],
+  );
   const onModalClose = useCallback(() => {
     setNewModal(false);
   }, []);
 
   const onModalOpen = useCallback(() => {
     setNewModal(true);
-  }, []);
-
-  const onBackupModalClose = useCallback(() => {
-    setShowBackupTable(false);
-    setBackupData([])
   }, []);
 
   const generatePassword = useCallback(async callback => {
