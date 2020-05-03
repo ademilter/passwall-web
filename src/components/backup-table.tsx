@@ -24,7 +24,7 @@ const BackupTable: React.FC<BackupTableProps> = ({
       title: 'Backup Name',
       render: (value, item, index) => (
         <Typography.Paragraph style={{ marginBottom: 0 }}>
-          {`Backup ', ${(data.length - ((page - 1) * 10 + index)).toString()}`}
+          {`Backup  ${(data.length - ((page - 1) * 10 + index)).toString()}`}
         </Typography.Paragraph>
       ),
     };
