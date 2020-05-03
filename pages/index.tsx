@@ -13,6 +13,7 @@ import PassTable from '../src/components/table';
 import { hasToken } from '../src/utils';
 import withLogin from '../src/hoc/withLogin';
 import { LoginParamter, Login, CheckPasswordResponse } from '../src/helpers/Login';
+import BackupTable from '../src/components/backup-table';
 
 type HomePageProps = {
   showLoginForm: () => void;
@@ -20,6 +21,9 @@ type HomePageProps = {
 
 const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
   const [showNewModal, setNewModal] = useState(false);
+  const [showBackupTable, setShowBackupTable] = useState(false);
+  const [backupData, setBackupData] = useState([]);
+
   const [isGeneratePasswordLoading, setIsGeneratePasswordLoading] = useState(false);
   const [isCheckPasswordLoading, setIsCheckPasswordLoading] = useState(false);
 
@@ -30,6 +34,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [isCreateLoading, setIsCreateLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [isBackupsLoading, setIsBackupsLoading] = useState(false);
 
   const passData = error || !Array.isArray(data) ? [] : data;
 
@@ -54,6 +59,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
       download(file, 'passwall.csv', 'text/csv');
 
       message.success('Passwords exported');
+
     } catch (e) {
       message.error(e.message);
     }
@@ -96,26 +102,52 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
       message.error(e.message);
     }
   }, []);
-
-  const handleRestore = useCallback(async () => {
+  const getBackups = useCallback(async () => {
     try {
-      await fetch('/api/logins/restore', {
-        method: 'POST',
+      const backups = await fetch('/api/logins/backup', {
+        method: 'GET',
       });
-
-      message.success('Passwords restored');
-      revalidate();
+      return backups;
     } catch (e) {
       message.error(e.message);
+      return [];
     }
-  }, [revalidate]);
-
+  }, []);
+  const handleRestore = useCallback(() => {
+    setIsBackupsLoading(true);
+    setShowBackupTable(true);
+    getBackups().then(backups => {
+      setBackupData(backups);
+      setIsBackupsLoading(false);
+    })
+  }, []);
+  const handleBackupSelected = useCallback(async (filename: string) => {
+    try {
+      setIsBackupsLoading(true)
+      await fetch('/api/logins/restore', {
+        method: 'POST',
+        body: JSON.stringify({ "name": filename })
+      });
+      revalidate();
+      setIsBackupsLoading(false)
+      onBackupModalClose()
+      message.success('Passwords restored');
+    } catch (e) {
+      setIsBackupsLoading(false)
+      message.error(e.message);
+    }
+  }, [revalidate])
   const onModalClose = useCallback(() => {
     setNewModal(false);
   }, []);
 
   const onModalOpen = useCallback(() => {
     setNewModal(true);
+  }, []);
+
+  const onBackupModalClose = useCallback(() => {
+    setShowBackupTable(false);
+    setBackupData([])
   }, []);
 
   const generatePassword = useCallback(async callback => {
@@ -244,6 +276,14 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         onSubmit={onCreatePass}
         isGeneratePasswordLoading={isGeneratePasswordLoading}
         isCheckPasswordLoading={isCheckPasswordLoading}
+      />
+
+      <BackupTable
+        data={backupData}
+        visible={showBackupTable}
+        handleBackupSelected={handleBackupSelected}
+        onClose={onBackupModalClose}
+        loading={isBackupsLoading}
       />
 
       <style jsx>
