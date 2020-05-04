@@ -5,6 +5,10 @@ export interface Login {
   username: string;
   password: string;
 }
+export interface Backup {
+  name: string;
+  created_at: string;
+}
 
 export interface LoginParamter {
   url: string;
