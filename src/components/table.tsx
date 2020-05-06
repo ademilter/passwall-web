@@ -4,7 +4,7 @@ import { FormikHelpers } from 'formik';
 import { blue, red } from '@ant-design/colors';
 import { Table, Input, Popconfirm, Tooltip, Typography } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { CloseOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons';
+import { CloseOutlined, EditOutlined, LoadingOutlined, BankFilled } from '@ant-design/icons';
 import PassForm from './pass-form';
 import { trimEllip } from '../utils';
 import PasswordField from './password-field';
@@ -19,6 +19,7 @@ type PassTableProps = {
   isUpdateLoading: boolean;
   isDeleteLoading: boolean;
   isCheckPasswordLoading?: boolean;
+  handleBankAccountSelected: (id: number | string) => void;
 };
 
 const PassTable: React.FC<PassTableProps> = ({
@@ -30,6 +31,7 @@ const PassTable: React.FC<PassTableProps> = ({
   isUpdateLoading,
   isDeleteLoading,
   isCheckPasswordLoading,
+  handleBankAccountSelected,
 }) => {
   const [searchText, setSearchText] = useState('');
   const [dataTable, setDataTable] = useState<Login[]>([]);
@@ -49,20 +51,26 @@ const PassTable: React.FC<PassTableProps> = ({
       ellipsis: true,
       sorter: (a, b) => a.url.localeCompare(b.url),
       sortDirections: ['descend', 'ascend'],
-      render: text => (
-        <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text.toString()}
-        />
+      render: (text, record) => (
+        <>
+          {record.type === 'bankAccount' && <BankFilled />}
+          <Highlighter
+            highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text.toString()}
+          />
+        </>
       ),
     };
     const usernameColumn: TableColumnType<Login> = {
       title: 'Username',
       dataIndex: 'username',
-      render: text => (
-        <Typography.Paragraph style={{ marginBottom: 0 }} copyable={{ text }}>
+      render: (text, record) => (
+        <Typography.Paragraph
+          style={{ marginBottom: 0 }}
+          copyable={record.type !== 'bankAccount' ? { text } : undefined}
+        >
           {trimEllip(text, 12)}
         </Typography.Paragraph>
       ),
@@ -70,7 +78,7 @@ const PassTable: React.FC<PassTableProps> = ({
     const passwordColumn: TableColumnType<Login> = {
       title: 'Password',
       dataIndex: 'password',
-      render: text => <PasswordField>{text}</PasswordField>,
+      render: (text, record) => <PasswordField copyable={record.type !== 'bankAccount'}>{text}</PasswordField>,
     };
     const actionColumn: TableColumnType<Login> = {
       key: 'action',
@@ -84,7 +92,10 @@ const PassTable: React.FC<PassTableProps> = ({
           <>
             <Tooltip title="Edit" placement="bottom">
               <EditOutlined
-                onClick={() => setUpdatedRecord(record)}
+                onClick={e => {
+                  e.stopPropagation();
+                  setUpdatedRecord(record);
+                }}
                 style={{
                   color: blue.primary,
                 }}
@@ -94,10 +105,14 @@ const PassTable: React.FC<PassTableProps> = ({
             <Popconfirm
               {...visibilityProps}
               title="Are you sure delete this pass?"
-              onConfirm={() => {
+              onConfirm={e => {
+                if (e) {
+                  e.stopPropagation();
+                }
                 setDeletedRecord(record);
                 onDeletePass(record);
               }}
+              onCancel={e => e?.stopPropagation()}
               okText="Yes"
               cancelText="No"
             >
@@ -113,6 +128,7 @@ const PassTable: React.FC<PassTableProps> = ({
                     style={{
                       color: red.primary,
                     }}
+                    onClick={e => e.stopPropagation()}
                   />
                 )}
               </Tooltip>
@@ -164,7 +180,24 @@ const PassTable: React.FC<PassTableProps> = ({
         onChange={handleInputChange}
       />
 
-      <Table<Login> size="small" loading={loading} columns={columns} rowKey="id" dataSource={dataTable} />
+      <Table<Login>
+        size="small"
+        loading={loading}
+        columns={columns}
+        rowKey="id"
+        dataSource={dataTable}
+        rowClassName={record => (record.type === 'bankAccount' ? 'clickable-row' : '')}
+        onRow={record => {
+          return {
+            onClick: e => {
+              if (record.type === 'bankAccount') {
+                e.stopPropagation();
+                handleBankAccountSelected(record.id);
+              }
+            },
+          };
+        }}
+      />
       <PassForm
         title="Update Pass"
         submitText="Update"
