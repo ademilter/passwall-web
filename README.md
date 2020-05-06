@@ -2,11 +2,20 @@
 
 PassWall Web is an open source client for PassWall Server
 
-## [Demo](https://passwall-web.herokuapp.com)
+## [Demo Web]
 
-**Base URL**: https://passwall-server.herokuapp.com  
+**Adres**: https://passwall-web.herokuapp.com
 **Username**: passwall  
 **Password**: password
+
+## [Demo Server]
+
+**Base URL**: https://passwall-server.herokuapp.com
+**Username**: passwall  
+**Password**: password
+
+
+
 
 ![PassWall Web](https://i.imgur.com/10Mwhec.png 'PassWall Web Login Screen')
 
