@@ -4,6 +4,15 @@ export interface Login {
   url: string;
   username: string;
   password: string;
+  type?: string;
+}
+export interface BankAccount extends Login {
+  bankName: string;
+  bankCode: string;
+  accountName: string;
+  accountNumber: string;
+  iban: string;
+  currency: string;
 }
 export interface Backup {
   name: string;

@@ -12,8 +12,9 @@ import Header from '../src/components/header';
 import PassTable from '../src/components/table';
 import { hasToken } from '../src/utils';
 import withLogin from '../src/hoc/withLogin';
-import { LoginParamter, Login, CheckPasswordResponse } from '../src/helpers/Login';
+import { LoginParamter, Login, CheckPasswordResponse, BankAccount } from '../src/helpers/Login';
 import BackupTable from '../src/components/backup-table';
+import BankAccountDetail from '../src/components/bank-account-detail';
 
 type HomePageProps = {
   showLoginForm: () => void;
@@ -22,14 +23,24 @@ type HomePageProps = {
 const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
   const [showNewModal, setNewModal] = useState(false);
   const [showBackupTable, setShowBackupTable] = useState(false);
+  const [showBankAccountDetail, setShowBankAccountDetail] = useState(false);
+
   const [backupData, setBackupData] = useState([]);
+  const [detailBankAccount, setDetailBankAccount] = useState<BankAccount>();
 
   const [isGeneratePasswordLoading, setIsGeneratePasswordLoading] = useState(false);
   const [isCheckPasswordLoading, setIsCheckPasswordLoading] = useState(false);
 
   const { data, error, revalidate, isValidating } = useSWR('/api/logins', fetch);
+  const {
+    data: bankAccountsData,
+    error: bankAccountsError,
+    revalidate: bankAccountsRevalidate,
+    isValidating: bankAccountsIsValidating,
+  } = useSWR('/api/bank-accounts', fetch);
 
-  const isLoading = (!error && !data) || isValidating;
+  const isLoading =
+    (!error && !data) || isValidating || (!bankAccountsError && !bankAccountsData) || bankAccountsIsValidating;
 
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [isCreateLoading, setIsCreateLoading] = useState(false);
@@ -37,6 +48,19 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
   const [isBackupsLoading, setIsBackupsLoading] = useState(false);
 
   const passData = error || !Array.isArray(data) ? [] : data;
+  const bankData =
+    bankAccountsError || !Array.isArray(bankAccountsData)
+      ? []
+      : bankAccountsData.map(b => ({
+          ...b,
+          bankName: b.bank_name,
+          bankCode: b.bank_code,
+          accountName: b.account_name,
+          accountNumber: b.accountNumber,
+        }));
+  const allData = bankData
+    .map(b => ({ id: b.id, url: b.bank_name, username: b.account_name, password: b.password, type: 'bankAccount' }))
+    .concat(passData);
 
   useEffect(() => {
     if (error && hasToken()) {
@@ -44,6 +68,10 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     }
   }, [error]);
 
+  const revalidateData = useCallback(() => {
+    revalidate();
+    bankAccountsRevalidate();
+  }, [revalidate, bankAccountsRevalidate]);
   const handleLogout = useCallback(() => {
     localStorage.removeItem('TOKEN');
     showLoginForm();
@@ -82,12 +110,12 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         });
 
         message.success('Import successfully');
-        revalidate();
+        revalidateData();
       } catch (e) {
         message.error(e.message);
       }
     },
-    [revalidate],
+    [revalidateData],
   );
 
   const handleBackup = useCallback(async () => {
@@ -116,7 +144,10 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     setShowBackupTable(false);
     setBackupData([]);
   }, []);
-
+  const onBankAccountModalClose = useCallback(() => {
+    setShowBankAccountDetail(false);
+    setDetailBankAccount({} as BankAccount);
+  }, []);
   const handleRestore = useCallback(() => {
     setIsBackupsLoading(true);
     setShowBackupTable(true);
@@ -125,6 +156,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
       setIsBackupsLoading(false);
     });
   }, [getBackups]);
+
   const handleBackupSelected = useCallback(
     async (filename: string) => {
       try {
@@ -133,7 +165,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
           method: 'POST',
           body: JSON.stringify({ name: filename }),
         });
-        revalidate();
+        revalidateData();
         setIsBackupsLoading(false);
         onBackupModalClose();
         message.success('Passwords restored');
@@ -142,8 +174,14 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         message.error(e.message);
       }
     },
-    [revalidate, onBackupModalClose],
+    [revalidateData, onBackupModalClose],
   );
+
+  const handleBankAccountSelected = (id: number | string) => {
+    const selectedBank: BankAccount = bankData.find(b => b.id === id);
+    setDetailBankAccount(selectedBank);
+    setShowBankAccountDetail(true);
+  };
   const onModalClose = useCallback(() => {
     setNewModal(false);
   }, []);
@@ -185,6 +223,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
     setIsCheckPasswordLoading(false);
     return urls;
   }, []);
+
   const onCreatePass = useCallback(
     async (values: LoginParamter, actions: FormikHelpers<LoginParamter>) => {
       setIsCreateLoading(true);
@@ -195,7 +234,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         });
         setNewModal(false);
         message.success('Password added');
-        revalidate();
+        revalidateData();
       } catch (e) {
         message.error(e.message);
       } finally {
@@ -203,7 +242,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         actions.setSubmitting(false);
       }
     },
-    [revalidate],
+    [revalidateData],
   );
 
   const onDeletePass = useCallback(
@@ -212,13 +251,13 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
       try {
         await fetch(`/api/logins/${pass.id}`, { method: 'DELETE' });
         message.success('Password deleted');
-        revalidate();
+        revalidateData();
       } catch (e) {
         message.error(e.message);
       }
       setIsDeleteLoading(false);
     },
-    [revalidate],
+    [revalidateData],
   );
 
   const onUpdatePass = useCallback(
@@ -230,7 +269,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
           body: JSON.stringify(values),
         });
         message.success('Password updated');
-        revalidate();
+        revalidateData();
       } catch (e) {
         message.error(e.message);
       } finally {
@@ -238,14 +277,14 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         callback();
       }
     },
-    [revalidate],
+    [revalidateData],
   );
 
   return (
     <div className="app">
       <Header
         loading={isLoading}
-        onDataRefresh={revalidate}
+        onDataRefresh={revalidateData}
         onModalOpen={onModalOpen}
         onLogout={handleLogout}
         onExport={handleExport}
@@ -263,7 +302,8 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
           onDeletePass={onDeletePass}
           onUpdatePass={onUpdatePass}
           onCheckPassword={onCheckPassword}
-          data={passData}
+          data={allData}
+          handleBankAccountSelected={handleBankAccountSelected}
         />
       </div>
 
@@ -286,6 +326,11 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
         handleBackupSelected={handleBackupSelected}
         onClose={onBackupModalClose}
         loading={isBackupsLoading}
+      />
+      <BankAccountDetail
+        bankAccount={detailBankAccount}
+        visible={showBankAccountDetail}
+        onClose={onBankAccountModalClose}
       />
 
       <style jsx>
