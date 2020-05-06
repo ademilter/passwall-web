@@ -56,7 +56,7 @@ const HomePage: NextPage<HomePageProps> = ({ showLoginForm }) => {
           bankName: b.bank_name,
           bankCode: b.bank_code,
           accountName: b.account_name,
-          accountNumber: b.accountNumber,
+          accountNumber: b.account_number,
         }));
   const allData = bankData
     .map(b => ({ id: b.id, url: b.bank_name, username: b.account_name, password: b.password, type: 'bankAccount' }))
