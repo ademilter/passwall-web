@@ -38,3 +38,10 @@ npm run build && npm run start
 ```
 docker-compose up --build
 ```
+
+### Run the tests:
+
+```
+npm run test
+```
+
