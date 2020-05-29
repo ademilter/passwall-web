@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PassTitle /> with no props should match the snapshot 1`] = `"<h1 class=\\"ant-typography\\"><img src=\\"/images/icon_125.png\\" alt=\\"Logo\\" height=\\"40\\" width=\\"40\\" style=\\"margin:5px\\"/><span style=\\"font-weight:bold\\">Pass</span>Wall</h1>"`;

@@ -26,6 +26,7 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'react-hooks'],
   rules: {
+    'import/no-extraneous-dependencies': 'off',
     'import/extensions': 'off',
     'implicit-arrow-linebreak': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -45,7 +46,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     'react-hooks/rules-of-hooks': 'error',
     'no-console': 'error',
-    'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/camelcase': 'off',

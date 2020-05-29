@@ -9,7 +9,10 @@
     "eslint": "eslint ./src ./pages --ext .jsx,.ts,.tsx,.js --cache",
     "prettier": "prettier \"src/**/*\" \"pages/**/*\"",
     "lint": "yarn eslint && yarn prettier --list-different",
-    "lint-fix": "yarn eslint --fix && yarn prettier --check"
+    "lint-fix": "yarn eslint --fix && yarn prettier --check",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@ant-design/colors": "^4.0.0",
@@ -34,12 +37,17 @@
   },
   "devDependencies": {
     "@types/downloadjs": "^1.4.1",
+    "@types/enzyme": "^3.10.5",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/jest": "^25.2.3",
     "@types/node": "^13.13.2",
     "@types/react": "^16.9.34",
     "@types/react-highlight-words": "^0.16.1",
     "@types/yup": "^0.28.0",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.11.0",
@@ -49,7 +57,11 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^3.0.0",
     "husky": "^4.2.5",
+    "jest": "^26.0.1",
+    "jsdom": "16.2.2",
+    "jsdom-global": "3.0.2",
     "prettier": "^2.0.5",
+    "ts-jest": "^26.0.0",
     "typescript": "^3.8.3"
   }
 }
