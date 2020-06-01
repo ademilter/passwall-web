@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY package.json .
 
-RUN npm install
+RUN yarn install
 
 # Push js files
 FROM node:12-alpine
@@ -20,6 +20,8 @@ COPY ./src ./src
 
 COPY ./styles ./styles
 
-RUN npm run build
+COPY ./public ./public
 
-CMD npm run start
+RUN yarn build
+
+CMD yarn start
