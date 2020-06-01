@@ -8,5 +8,7 @@ services:
     restart: always
     build:
       context: .
+    environment: 
+      - PORT=3000
     ports:
       - 3000:3000
